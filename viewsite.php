@@ -201,13 +201,13 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
 								<?php $Qproj = "select * from projectsites ";
 								$runQproj = mysqli_query($conn, $Qproj);
 								while ($Qprojfetch = mysqli_fetch_array($runQproj)) {
-									if ($Qprojfetch['id'] != '4') {
+									
 								?>
 										<option value="<?php echo $Qprojfetch['id']; ?>" <?php if ($Qprojfetch['id'] == "1") { ?> selected <?php } ?>>
 											<?php echo $Qprojfetch['Name']; ?>
 										</option>
 
-								<?php }
+								<?php 
 								} ?>
 
 							</select></td>

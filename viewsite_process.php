@@ -57,7 +57,7 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
 
   // echo '$project = '.$project ; 
 
-  if ($project == "1" || $project == '4') {
+  if ($project == "1") {
 
 
 
@@ -1496,7 +1496,378 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
 
     </html>
 <?php
+  }  else if ($project == "4") {
+
+
+    $DVRIP1 = $_POST['DVRIP'];
+    $atmid = $_POST['atmid'];
+    $lstatus = $_POST['lstatus'];
+    $strPage = $_POST['Page'];
+    $cssbm = $_POST['cssbm'];
+    $customer = $_POST['cust'];
+    $track = $_POST['track'];
+
+
+
+
+    $sql = "select * from gpssites  where 1=1  ";
+
+    if ($customer != "") {
+      $sql .= " and customer='" . $customer . "'";
+    }
+
+    if ($lstatus != "") {
+      $sql .= " and Status='" . $lstatus . "'";
+    }
+
+
+
+    if ($DVRIP1 != "") {
+      $sql .= " and IPAddress='" . $DVRIP1 . "'";
+    }
+
+    if ($atmid != "") {
+      $sql .= " and ATMID like '%" . $atmid . "%' ";
+    }
+
+
+    if ($cssbm != "") {
+      $sql .= " and ATMID in(select ATM_ID from esurvsites where CSSBM='$cssbm')";
+    }
+
+
+    echo $sql;
+    $result = mysqli_query($conn, $sql);
+    $Num_Rows = mysqli_num_rows($result);
+    $qr22 = $sql;
+    $Per_Page = $_POST['perpg']; // Records Per Page
+
+    $Page = $strPage;
+
+    if ($strPage == "") {
+      $Page = 1;
+    }
+
+    $Prev_Page = $Page - 1;
+    $Next_Page = $Page + 1;
+
+
+    $Page_Start = (($Per_Page * $Page) - $Per_Page);
+    if ($Num_Rows <= $Per_Page) {
+      $Num_Pages = 1;
+    } else if (($Num_Rows % $Per_Page) == 0) {
+      $Num_Pages = ($Num_Rows / $Per_Page);
+    } else {
+      $Num_Pages = ($Num_Rows / $Per_Page) + 1;
+      $Num_Pages = (int) $Num_Pages;
+    }
+
+    $sql .= " LIMIT $Page_Start , $Per_Page";
+
+    $qrys = mysqli_query($conn, $sql);
+
+    $count = mysqli_num_rows($qrys);
+
+    $sr = 1;
+    if ($Page == "1" or $Page == "") {
+      $sr = "1";
+    } else {
+
+      $sr = ($Page_Start * $Page) - $Page_Start;
+
+      $sr = $sr + 1;
+    }
+
+  ?>
+
+    <?php
+    $sr++;
+
+
+
+
+
+
+
+
+
+
+    ?>
+    </table>
+
+
+
+
+
+    <html>
+
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+      <style>
+        table {
+          width: 100%;
+        }
+
+        td {
+          padding: 10px;
+          font-size: 12px;
+          font-weight: bold;
+          color: #000;
+        }
+
+        tr:hover {
+          background-color: #eee !important;
+        }
+
+        tr,
+        th {
+          padding: 10px;
+          background-color: #8cb77e;
+          color: #fff;
+          font-size: 12px;
+        }
+      </style>
+    </head>
+
+    <body>
+      <input type="hidden" name="expqry" id="expqry" value="<?php echo $sql; ?>">
+      <input type="hidden" name="expdata" id="expdata" value="<?php echo "Cloud" ?>">
+      <button id="myButtonControlID" onClick="expfunc();">Export Table data into Excel</button>
+
+      <center>
+        <div>Total Records:
+          <?php echo $Num_Rows ?>
+        </div>
+      </center>
+      <table border=1 style="margin-top:30px">
+        <tr>
+          <th>Sr No</th>
+          <th>Customer</th>
+          <th>Bank</th>
+          <th>Tracker No</th>
+
+          <th>ATMID</th>
+          <th>ATMID_2</th>
+          <th>ATMShortName</th>
+          <th>SiteAddress</th>
+          <th>City</th>
+          <th>State</th>
+          <th>Zone</th>
+          <th>DVRIP</th>
+          <th>DVRName</th>
+          <th>DVR_Model_num</th>
+
+          <th>DVR_Serial_num </th>
+          <th>CTSLocalBranch </th>
+          <th>CTS_BM_Name </th>
+          <th>CTS_BM_Number </th>
+          <th>HDD </th>
+          <th>Camera1 </th>
+          <th>Camera2</th>
+
+          <th>Camera3 </th>
+          <th>Attachment1 </th>
+          <th>Attachment2 </th>
+          <th>LiveDate </th>
+          <th>Site Remark </th>
+          <th>User Name</th>
+          <th>Password</th>
+          <th>Router ID</th>
+          <th>Edit</th>
+          <th>Remark</th>
+
+          <th>Tracker</th>
+          <th>BM Name</th>
+          <th>Engineer Name</th>
+          <th>Status Date </th>
+          <th>OLD ATMID</th>
+          <th>Installation Date</th>
+          <th>Status</th>
+        </tr>
+        <?php
+        $srno = 1;
+        while ($row = mysqli_fetch_array($qrys)) {
+
+
+          $id = $row['id'];
+
+          $gpssites_details = mysqli_query($conn, "select * from gpssites_details where dvrid='" . $id . "' order by id desc");
+          $gpssites_details_result = mysqli_fetch_assoc($gpssites_details);
+
+          $tracker = $gpssites_details_result['tracker'];
+          $bmName = $gpssites_details_result['bmName'];
+          $engineerName = $gpssites_details_result['engineerName'];
+          $statusDate = $gpssites_details_result['statusDate'];
+
+
+
+        ?>
+
+
+
+          <tr style="background-color:#cfe8c7">
+            <td>
+              <?php echo $srno; ?>
+            </td>
+
+            <td>
+              <?php echo $row["customer"]; ?>
+            </td>
+            <td>
+              <?php echo $row["Bank"]; ?>
+            </td>
+            <td>
+              <?php echo "NA"; ?>
+            </td>
+            <td>
+              <?php echo $row["ATMID"]; ?>
+            </td>
+
+            <td>
+              <?php echo $row["ATMID2"]; ?>
+            </td>
+
+            <td>
+              <?php echo $row["Address"]; ?>
+            </td>
+            <td>
+              <?php echo $row["Location"]; ?>
+            </td>
+            <td>
+              <?php echo $row["city"]; ?>
+            </td>
+            <td>
+              <?php echo $row["State"]; ?>
+            </td>
+            <td>
+              <?php echo $row["zone"]; ?>
+            </td>
+            <td>
+              <?php echo $row["IPAddress"]; ?>
+            </td>
+
+            <td>
+              <?php echo $row["dvrname"]; ?>
+            </td>
+            <td>
+              <?php echo "NA"; ?>
+            </td>
+            <td>
+              <?php echo "NA"; ?>
+            </td>
+            <td>
+              <?php echo "NA"; ?>
+            </td>
+            <td>
+              <?php echo "NA"; ?>
+            </td>
+            <td>
+              <?php echo "NA"; ?>
+            </td>
+            <td>
+              <?php echo "NA"; ?>
+            </td>
+            <td>
+              <?php echo "NA"; ?>
+            </td>
+            <td>
+              <?php echo "NA"; ?>
+            </td>
+            <td>
+              <?php echo "NA"; ?>
+            </td>
+            <td>
+              <?php echo "NA"; ?>
+            </td>
+            <td>
+              <?php echo "NA"; ?>
+            </td>
+            <td>
+              <?php echo $row["Live Date"]; ?>
+            </td>
+            <td>
+              <?php echo "NA"; ?>
+            </td>
+            <td>
+              <?php echo $row["UserName"]; ?>
+            </td>
+            <td>
+              <?php echo $row["Password"]; ?>
+            </td>
+            <td>
+              <?php echo $row["Rourt ID"]; ?>
+            </td>
+
+
+            <td> <a href="editOnlineDVR.php?atmid=<?php echo $row[0]; ?>" title="Edit" class="icon-1 info-tooltip">Edit</a>
+            </td>
+
+            <td>
+              <?php echo $row['remark']; ?>
+            </td>
+
+            <td>
+              <?php echo $tracker; ?>
+            </td>
+            <td>
+              <?php echo $bmName; ?>
+            </td>
+            <td>
+              <?php echo $engineerName; ?>
+            </td>
+            <td>
+              <?php echo $statusDate; ?>
+            </td>
+            <td>
+              <?php echo $row['old_atm']; ?>
+            </td>
+            <td>
+              <?php echo $row['installationDate']; ?>
+            </td>
+
+            <td>
+              <?php echo $row['Status']; ?>
+            </td>
+
+          </tr>
+
+
+        <?php
+          $srno++;
+        }
+        ?>
+
+
+      </table>
+
+      </form>
+      <div>
+        <?php
+
+        if ($Prev_Page) {
+          echo " <center><a href=\"JavaScript:a('$Prev_Page','perpg')\"> << Back></a></center> ";
+        }
+
+        if ($Page != $Num_Pages) {
+          echo "<center> <a href=\"JavaScript:a('$Next_Page','perpg')\">Next >></a></center> ";
+        }
+        ?>
+        <!--<form name="frm" method="post" action="exportsite_ram.php" target="_new">
+<input type="text" name="qr" value="<?php echo $qr22; ?>" readonly>
+<input type="submit" name="cmdsub" value="Export" ></span>
+</form>-->
+      </div>
+
+    </body>
+
+    </html>
+<?php
   }
+
 } else {
   header("location: index.php");
 }
