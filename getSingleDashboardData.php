@@ -197,9 +197,10 @@ $allCriticalAlerts = array(
             }
         } else if ($status == 'criticalopen') {
 
-
+            // echo "SELECT * FROM `alerts` WHERE `status` LIKE 'O' and sendtoclient='S' and sip='" . $terminal . "' and alerttype IN ('" . implode("','", $allCriticalAlerts) . "')  and receivedtime BETWEEN $ShiftWise " ; 
+// echo "SELECT * FROM `alerts` WHERE `status` LIKE 'O' and sendtoclient='S' and sendip='" . $terminal . "' and alerttype IN ('" . implode("','", $allCriticalAlerts) . "')  and receivedtime BETWEEN $ShiftWise ";
             $alertSqlcritical = mysqli_query($conn, "SELECT * FROM `alerts` WHERE `status` LIKE 'O' and sendtoclient='S' and sendip='" . $terminal . "' and alerttype IN ('" . implode("','", $allCriticalAlerts) . "')  and receivedtime BETWEEN $ShiftWise ");
-            $alertSqlcritical2 = mysqli_query($conn, "SELECT * FROM `alerts` WHERE `status` LIKE 'O' and sendtoclient='S' and sip='" . $terminal . "' and alerttype IN ('" . implode("','", $allCriticalAlerts) . "')  and receivedtime BETWEEN $ShiftWise ");
+            $alertSqlcritical2 = mysqli_query($conn, "SELECT * FROM `alerts` WHERE `status` LIKE 'O' and sendtoclient='S' and sip2='" . $terminal . "' and alerttype IN ('" . implode("','", $allCriticalAlerts) . "')  and receivedtime BETWEEN $ShiftWise ");
 
             $i = 1;
             while ($row = mysqli_fetch_assoc($alertSqlcritical)) {

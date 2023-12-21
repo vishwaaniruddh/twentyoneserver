@@ -203,7 +203,7 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
 								while ($Qprojfetch = mysqli_fetch_array($runQproj)) {
 									
 								?>
-										<option value="<?php echo $Qprojfetch['id']; ?>" <?php if ($Qprojfetch['id'] == "1") { ?> selected <?php } ?>>
+										<option value="<?php echo $Qprojfetch['id']; ?>" <?php if($_REQUEST['project']==$Qprojfetch['id']){ echo 'selected'; }?>>
 											<?php echo $Qprojfetch['Name']; ?>
 										</option>
 
@@ -215,7 +215,7 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
 
 						<td>Status:<select name="lstatus" id="lstatus" style="width: 150px;">
 								<option value=""> Select</option>
-								<option value="Y" selected> Active</option>
+								<option value="Y" <?php if($_REQUEST['searchTye']!='auto') { echo 'selected'; } ?> > Active</option>
 								<option value="N">In Active</option>
 								<option value="P">Pending</option>
 								<option value="T">Testing</option>
@@ -227,7 +227,7 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
 						
 
 
-						<td> ATM ID:<input type="text" name="atmid" id="atmid"></td>
+						<td> ATM ID:<input type="text" name="atmid" id="atmid" value="<?php echo $_REQUEST['atmid']; ?>" ></td>
 						<td> Tracker No:<input type="text" name="track" id="track"></td>
 
 						<td> DVRIP:<input type="text" name="DVRIP" id="DVRIP"></td>
@@ -292,7 +292,7 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
 						</td>
 
 
-						<td><input type="button" name="submit" onclick="a('','')" value="search"></button></td>
+						<td><input type="button" id="submitForm" name="submit" onclick="a('','')" value="search"></button></td>
 						<!--<input type="button" onclick="tableToExcel('show', 'W3C Example Table')" value="Export to Excel" style="float: right;" >-->
 
 
@@ -337,7 +337,17 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
 	</html>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script>
-		function expfunc() { //alert("hii")
+
+if (window.location.href.includes('searchTye=auto')) {
+            // Use setTimeout to delay the button click by 2 seconds
+            setTimeout(function () {
+
+				$("#submitForm").click();
+            }, 2000);
+        }
+
+
+function expfunc() { //alert("hii")
 			$('#formf').attr('action', 'css_View_Site_export.php').attr('target', '_blank');
 			$('#formf').submit();
 
