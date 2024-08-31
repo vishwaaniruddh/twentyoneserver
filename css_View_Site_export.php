@@ -1,8 +1,41 @@
 <?php
+include('config.php');
 
-error_reporting(0);
-ini_set('max_execution_time', 0);
-set_time_limit(0);
+
+require 'vendor/autoload.php';
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+
+
+$spreadsheet = new Spreadsheet();
+$sheet = $spreadsheet->getActiveSheet();
+
+function getColumnLabel($index) {
+  $base26 = '';
+  if ($index >= 26) {
+      $base26 .= chr(65 + ($index / 26) - 1);
+  }    
+  $base26 .= chr(65 + ($index % 26));
+  return $base26;
+}
+
+// $exportSql = $_REQUEST['exportSql']; 
+// $sql_app = mysqli_query($con, $exportSql); 
+
+$qry = $_POST['expqry'];  // sql 
+$qrydata = $_POST['expdata']; // request data
+
+$_project_id = "1";
+if(isset($_POST['project'])){
+	$_project_id = $_POST['project']; 
+}
+
+
+// error_reporting(0);
+// ini_set('max_execution_time', 0);
+// set_time_limit(0);
 
 
 
@@ -38,37 +71,6 @@ function remove_special($site_remark2)
 
   return clean($site_remark);
 }
-
-
-
-
-
-include('config.php');
-
-$qry = $_POST['expqry'];
-$qrydata = $_POST['expdata'];
-//echo $qry;
-
-require_once 'Classes/PHPExcel.php';
-
-require_once "Classes/PHPExcel/IOFactory.php";
-
-include_once 'Classes/PHPExcel/Writer/Excel5.php';
-
-// create new PHPExcel object
-$objPHPExcel = new PHPExcel();
-
-ini_set('memory_limit', '-1');
-/*
-function getsiminfo($atmid,$parameter){
-  global $conn;
-
-  $sql = mysqli_query($conn,"select $parameter from sites_siminfo where atmid='".$atmid."'");
-  $sql_result = mysqli_fetch_assoc($sql);
-
-  return $sql_result[$parameter];
-}
-*/
 
 function getsiminfo($atmid, $parameter)
 {
@@ -110,38 +112,88 @@ function get_sites_info($atmid, $parameter)
   return  $info;
 }
 
-
-
-
-//Prevent your script from timing out
-
-// This increases the excution time from 30 secs to 3000 secs.
-//set_time_limit ( 3000 ); 
-
-
-// writer already created the first sheet for us, let's get it
-$objSheet = $objPHPExcel->getActiveSheet();
-
-//rename the sheet
-$objSheet->setTitle('Sites details');
-
-
 if ($qrydata == "RMS") {
+   $filename = "RMS_SITES.csv";
+   $fp = fopen('php://output', 'w');
+    $headers = array(
+      'Sr No',
+      'Customer',
+      'Bank',
+      'Tracker No',
+      'ATMID',
+      'OLD ATMID',
+      'ATMID_2',
+      'ATMID_3',
+      'ATMShortName',
+      'SiteAddress',
+      'City',
+      'State',
+      'Zone',
+      'CTS_LocalBranch',
+      'Panel_Make',
+      'OldPanelID',
+      'NewPanelID',
+      'PanelIP',
+      'DVRIP',
+      'DVRName',
+      'UserName',
+      'Password',
+      'Live',
+      'Live Date',
+      'Installation Engineer Name',
+      'CTS Engineer Name',
+      'CTS Engineer Number',
+      'CSSBM',
+      'CSSBMNumber',
+      'CSS BM Email',
+      'BackofficerName',
+      'BackofficerNumber',
+      'HeadSupervisorName',
+      'HeadSupervisorNumber',
+      'SupervisorName',
+      'Supervisornumber',
+      'RA Name',
+      'RA Number',
+      'Police Number',
+      'Police Station',
+      'Fire Station Name',
+      'Fire Station number',
+      'Atm Officer Name',
+      'Atm Officer Number',
+      'ATM Officer Email',
+      'Zonal Co-ordinator Name',
+      'Zonal Co-ordinator Number',
+      'Zonal Co-ordinator Email',
+      'Bank Officer Email ID',
+      'CO Owner Name',
+      'CO Owner Number',
+      'CO Owner Email ID',
+      'Zonal Name',
+      'Zonal Number',
+      'Zonal Email ID',
+      'Installation date',
+      'Site Add By',
+      'Site Edit By',
+      'GSM Number',
+      'DVR_Model_num',
+      'Router_Model_num',
+      'Remarks',
+      'Router Id',
+      'SIM Number',
+      'SIM Owner',
+      'Router Brand',
+      'Camera IP',
+      'Port',
+      'Ip Camera',
+      'Bank Officer Name',
+      'Bank Officer Number' 
 
+      
+    );
 
-
-
-
-
-
-
-
-
-
-  $contents = '';
-  $contents .= "Sr No \t Customer \t Bank \t Tracker No \t ATMID \t OLD ATMID \t ATMID_2 \t ATMID_3 \t ATMShortName \t SiteAddress \t City \t State \t Zone \t CTS_LocalBranch \t Panel_Make \t OldPanelID \t NewPanelID \t PanelIP \t DVRIP \t DVRName \t UserName \t Password \t Live \t Live Date \t Installation Engineer Name \t CTS Engineer Name \t CTS Engineer Number \t CSSBM \t CSSBMNumber \t CSS BM Email \t BackofficerName \t BackofficerNumber \t HeadSupervisorName \t HeadSupervisorNumber \t SupervisorName \t Supervisornumber \t RA Name \t RA Number \t Police Number \t Police Station \t Fire Station Name \t Fire Station number \t Atm Officer Name \t Atm Officer Number \t ATM Officer Email \t Zonal Co-ordinator Name \t Zonal Co-ordinator Number \t Zonal Co-ordinator Email \t Bank Officer Email ID \t CO Owner Name \t CO Owner Number \t CO Owner Email ID \t Zonal Name \t Zonal Number \t Zonal Email ID \t Installation date \t Site Add By \t Site Edit By \t GSM Number \t DVR_Model_num \t Router_Model_num \t Remarks \t Router Id \t SIM Number \t SIM Owner \t Router Brand \t Camera IP \t Port \t Ip Camera \t Bank Officer Name \t Bank Officer Number \t ";
-
-
+    header('Content-type: application/csv');
+    header('Content-Disposition: attachment; filename=' . $filename);
+    fputcsv($fp, $headers);
 
   $sqry = mysqli_query($conn, $qry);
 
@@ -165,7 +217,7 @@ if ($qrydata == "RMS") {
 
 
 
-    $site_details = mysqli_query($conn, "select * from sites_details where site_id ='" . $id . "' and project='1'");
+    $site_details = mysqli_query($conn, "select * from sites_details where site_id ='" . $id . "' and project='".$_project_id."'");
 
     if ($site_details_result = mysqli_fetch_assoc($site_details)) {
 
@@ -201,147 +253,156 @@ if ($qrydata == "RMS") {
       $cam_name .= $value . ",";
     }
 
-
-
-
     $rowarr['Customer'];
 
-    $contents .= "\n" . $srn . "\t";
+    $array_row = array();
+    array_push($array_row,$srn);
+    array_push($array_row,($rowarr['Customer']));
+    array_push($array_row,($rowarr['Bank']));
+    array_push($array_row,remove_special($rowarr['TrackerNo']));
+    array_push($array_row,($rowarr['ATMID']));
+    array_push($array_row,($rowarr['old_atmid']));
+    array_push($array_row,($rowarr['ATMID_2']));
+    array_push($array_row,($rowarr['ATMID_3']));
+    array_push($array_row,remove_special($rowarr['ATMShortName']));
 
-    $contents .= trim(remove_special($rowarr['Customer'])) . "\t";
-    $contents .= trim(remove_special($rowarr['Bank'])) . "\t";
-    $contents .= trim(remove_special($rowarr['TrackerNo'])) . "\t";
-    $contents .= trim(remove_special($rowarr['ATMID'])) . "\t";
-    $contents .= trim(remove_special($rowarr['old_atmid'])) . "\t";
-    $contents .= trim(remove_special($rowarr['ATMID_2'])) . "\t";
-    $contents .= trim(remove_special($rowarr['ATMID_3'])) . "\t";
-    $contents .= trim(remove_special($rowarr['ATMShortName'])) . "\t";
-    $contents .= trim(remove_special($rowarr['SiteAddress'])) . "\t";
-    $contents .= trim(remove_special($rowarr['City'])) . "\t";
-    $contents .= trim(remove_special($rowarr['State'])) . "\t";
-    $contents .= trim(remove_special($rowarr['Zone'])) . "\t";
-    $contents .= trim(remove_special($row1['CTS_LocalBranch'])) . "\t";
-    $contents .= trim(remove_special($rowarr['Panel_Make'])) . "\t";
-    $contents .= trim(remove_special($rowarr['OldPanelID'])) . "\t";
-    $contents .= trim(remove_special($rowarr['NewPanelID'])) . "\t";
-    $contents .= $rowarr['PanelIP'] . "\t";
-    $contents .= $rowarr['DVRIP'] . "\t";
-    $contents .= trim(remove_special($rowarr['DVRName'])) . "\t";
-    $contents .= trim(remove_special($rowarr['UserName'])) . "\t";
-    $contents .= trim(remove_special($rowarr['Password'])) . "\t";
-    $contents .= trim(remove_special($rowarr['live'])) . "\t";
-    $contents .= $rowarr['live_date'] . "\t";
-    $contents .= trim(remove_special($rowarr['eng_name'])) . "\t";
-    $contents .= trim(remove_special($row1['CTS_Engineer_Name'])) . "\t";
-    $contents .= trim(remove_special($row1['CTS_Engineer_Number'])) . "\t";
-    $contents .= trim(remove_special($row1['CSSBM'])) . "\t";
-    $contents .= trim(remove_special($row1['CSSBMNumber'])) . "\t";
-    $contents .= trim(remove_special($row1['CSSBM_Email'])) . "\t";
-    $contents .= trim(remove_special($row1['BackofficerName'])) . "\t";
-    $contents .= trim(remove_special($row1['BackofficerNumber'])) . "\t";
-    $contents .= trim(remove_special($row1['HeadSupervisorName'])) . "\t";
-    $contents .= trim(remove_special($row1['HeadSupervisorNumber'])) . "\t";
-    $contents .= trim(remove_special($row1['SupervisorName'])) . "\t";
-    $contents .= trim(remove_special($row1['Supervisornumber'])) . "\t";
-    $contents .= trim(remove_special($row1['RA_QRT_NAME'])) . "\t";
-    $contents .= trim(remove_special($row1['RA_QRT_NUMBER'])) . "\t";
-    $contents .= trim(remove_special($row1['Policestation'])) . "\t";
-    $contents .= trim(remove_special($row1['Polstnname'])) . "\t";
-    $contents .= trim(remove_special($row1['firestation_name'])) . "\t";
-    $contents .= trim(remove_special($row1['firestation_number'])) . "\t";
-    $contents .= trim(remove_special($row1['atm_officer_name'])) . "\t";
-    $contents .= trim(remove_special($row1['atm_officer_number'])) . "\t";
-    $contents .= trim(remove_special($row1['atm_officer_email'])) . "\t";
-    $contents .= trim(remove_special($row1['zonal_co_ordinator_name'])) . "\t";
-    $contents .= trim(remove_special($row1['zonal_co_ordinator_number'])) . "\t";
-    $contents .= trim(remove_special($row1['zonal_co_ordinator_email'])) . "\t";
-    $contents .= trim(remove_special($row1['Bank_Officer_Email_ID'])) . "\t";
-    $contents .= trim(remove_special($row1['CO_Owner_Name'])) . "\t";
-    $contents .= trim(remove_special($row1['CO_Owner_Number'])) . "\t";
-    $contents .= trim(remove_special($row1['CO_Owner_Email_ID'])) . "\t";
-    $contents .= trim(remove_special($row1['Zonal_Name'])) . "\t";
-    $contents .= trim(remove_special($row1['Zonal_Number'])) . "\t";
-    $contents .= trim(remove_special($row1['Zonal_Email_ID'])) . "\t";
-    $contents .= $rowarr['current_dt'] . "\t";
-    $contents .= trim(remove_special($rowarr['addedby'])) . "\t";
-    $contents .= trim(remove_special($rowarr['editby'])) . "\t";
-    $contents .= trim(remove_special($row1['TwoWayNumber'])) . "\t";
-    $contents .= trim(remove_special($rowarr['DVR_Model_num'])) . "\t";
-    $contents .= trim(remove_special($rowarr['Router_Model_num'])) . "\t";
-    $contents .= trim(remove_special($rowarr['site_remark'])) . "\t";
-    $contents .= trim(remove_special($router_id)) . "\t";
-    $contents .= trim(remove_special(getsiminfo($rowarr['ATMID'], 'simnnumber'))) . "\t";
-    $contents .= trim(remove_special(getsiminfo($rowarr['ATMID'], 'simowner'))) . "\t";
-    $contents .= trim(remove_special($router_brand)) . "\t";
-    $contents .= $camera_ip . "\t";
-    $contents .= trim(remove_special($port)) . "\t";
-    $contents .= trim(remove_special($cam_name)) . "\t";
-    $contents .= trim(remove_special($row1['bank_officer_name'])) . "\t";
-    $contents .= trim(remove_special($row1['bank_officer_number'])) . "\t";
+    array_push($array_row,remove_special($rowarr['SiteAddress']));
+    array_push($array_row,($rowarr['City']));
+    array_push($array_row,($rowarr['State']));
+    array_push($array_row,($rowarr['Zone']));
+    array_push($array_row,remove_special($row1['CTS_LocalBranch']));
+    array_push($array_row,($rowarr['Panel_Make']));
+    array_push($array_row,($rowarr['OldPanelID']));
+    array_push($array_row,($rowarr['NewPanelID']));
 
+    array_push($array_row,$rowarr['PanelIP']);
+    array_push($array_row,$rowarr['DVRIP']);
+    array_push($array_row,($rowarr['DVRName']));
+    array_push($array_row,($rowarr['UserName']));
+    array_push($array_row,($rowarr['Password']));
+    array_push($array_row,($rowarr['live']));
+    array_push($array_row,$rowarr['live_date']);
+    array_push($array_row,($rowarr['eng_name']));
+    
+    array_push($array_row,($row1['CTS_Engineer_Name']));
+    array_push($array_row,($row1['CTS_Engineer_Number']));
+    array_push($array_row,($row1['CSSBM']));
+    array_push($array_row,($row1['CSSBMNumber']));
+    array_push($array_row,($row1['CSSBM_Email']));
+    
+    array_push($array_row,($row1['BackofficerName']));
+    array_push($array_row,($row1['BackofficerNumber']));
+    array_push($array_row,($row1['HeadSupervisorName']));
+    array_push($array_row,($row1['HeadSupervisorNumber']));
+    array_push($array_row,($row1['SupervisorName']));
+
+    array_push($array_row,remove_special($row1['Supervisornumber']));
+    array_push($array_row,remove_special($row1['RA_QRT_NAME']));
+    array_push($array_row,remove_special($row1['RA_QRT_NUMBER']));
+    array_push($array_row,remove_special($row1['Policestation']));
+    array_push($array_row,remove_special($row1['Polstnname']));
+
+    array_push($array_row,remove_special($row1['firestation_name']));
+    array_push($array_row,remove_special($row1['firestation_number']));
+    array_push($array_row,remove_special($row1['atm_officer_name']));
+    array_push($array_row,remove_special($row1['atm_officer_number']));
+    array_push($array_row,($row1['atm_officer_email']));
+
+    array_push($array_row,remove_special($row1['zonal_co_ordinator_name']));
+    array_push($array_row,remove_special($row1['zonal_co_ordinator_number']));
+    array_push($array_row,remove_special($row1['zonal_co_ordinator_email']));
+    array_push($array_row,remove_special($row1['Bank_Officer_Email_ID']));
+    array_push($array_row,remove_special($row1['CO_Owner_Name']));
+
+    array_push($array_row,remove_special($row1['CO_Owner_Number']));
+    array_push($array_row,remove_special($row1['CO_Owner_Email_ID']));
+    array_push($array_row,remove_special($row1['Zonal_Name']));
+    array_push($array_row,remove_special($row1['Zonal_Number']));
+    array_push($array_row,($row1['Zonal_Email_ID']));
+    
+    array_push($array_row,$rowarr['current_dt']);
+    array_push($array_row,remove_special($rowarr['addedby']));
+    array_push($array_row,remove_special($rowarr['editby']));
+    array_push($array_row,remove_special($rowarr['TwoWayNumber']));
+    array_push($array_row,remove_special($rowarr['DVR_Model_num']));
+
+    array_push($array_row,remove_special($rowarr['Router_Model_num']));
+    array_push($array_row,remove_special($rowarr['site_remark']));
+    array_push($array_row,$router_id);
+    array_push($array_row,getsiminfo($rowarr['ATMID'], 'simnnumber'));
+    array_push($array_row,getsiminfo($rowarr['ATMID'], 'simowner'));
+    
+    array_push($array_row,$router_brand);
+    array_push($array_row,$camera_ip);
+    array_push($array_row,remove_special($port));
+    array_push($array_row,remove_special($cam_name));
+    array_push($array_row,remove_special($row1['bank_officer_name']));
+    array_push($array_row,remove_special($row1['bank_officer_number']));
+    
+        
+    $i++;
+    $serial_number++;
 
 
     $row++;
     $srn++;
+
+     fputcsv($fp, $array_row);
   }
-  header("Content-Disposition: attachment; filename=sites.xls");
-  header("Content-Type: application/vnd.ms-excel");
-  print $contents;
 
-
-  return;
+   // Close the database connection
+  mysqli_close($con);
+  exit();
 } else if ($qrydata == "DVR") {
 
+   $filename = "DVR_SITES.csv";
+   $fp = fopen('php://output', 'w');
+
+  $headers = array(
+    'Sr No',
+    'Customer',
+    'Bank',
+    'Tracker No',
+    'ATMID',
+    'ATMID_2',
+    'ATMShortName',
+    'SiteAddress',
+    'City',
+    'State',
+    'Zone',
+    'PanelIP',
+    'DVRIP',
+    'DVRName',
+    'DVR_Model_num',
+    'DVR_Serial_num',
+    'CTSLocalBranch',
+    'CTS_BM_Name',
+    'CTS_BM_Number',
+    'HDD',
+    'Camera1',
+    'Camera2',
+    'Camera3',
+    'Attachment1',
+    'Attachment2',
+    'LiveDate',
+    'Site Remark',
+    'User Name',
+    'Password',
+    'Router Id',
+    'SIM Number',
+    'SIM Owner',
+    'Router Brand',
+    'Live Status',
+    'OLD ATMID',
+  );
 
 
+  header('Content-type: application/csv');
+  header('Content-Disposition: attachment; filename=' . $filename);
+  fputcsv($fp, $headers);
 
-  $objSheet->setCellValue('A1', 'Sr No');
-  $objSheet->setCellValue('B1', 'Customer');
-  $objSheet->setCellValue('C1', 'Bank');
-  $objSheet->setCellValue('D1', 'Tracker No');
-  $objSheet->setCellValue('E1', 'ATMID');
-  $objSheet->setCellValue('F1', 'ATMID_2');
-
-  $objSheet->setCellValue('G1', 'ATMShortName');
-  $objSheet->setCellValue('H1', 'SiteAddress');
-
-  $objSheet->setCellValue('I1', 'City');
-  $objSheet->setCellValue('J1', 'State');
-  $objSheet->setCellValue('K1', 'Zone');
-  $objSheet->setCellValue('L1', 'PanelIP');
-  $objSheet->setCellValue('M1', 'DVRIP');
-  $objSheet->setCellValue('N1', 'DVRName');
-  $objSheet->setCellValue('O1', 'DVR_Model_num');
-
-  $objSheet->setCellValue('P1', 'DVR_Serial_num');
-  $objSheet->setCellValue('Q1', 'CTSLocalBranch');
-
-
-  $objSheet->setCellValue('R1', 'CTS_BM_Name');
-  $objSheet->setCellValue('S1', 'CTS_BM_Number');
-  $objSheet->setCellValue('T1', 'HDD');
-  $objSheet->setCellValue('U1', 'Camera1');
-
-  $objSheet->setCellValue('V1', 'Camera2');
-  $objSheet->setCellValue('W1', 'Camera3');
-  $objSheet->setCellValue('X1', 'Attachment1');
-  $objSheet->setCellValue('Y1', 'Attachment2');
-  $objSheet->setCellValue('Z1', 'LiveDate');
-  $objSheet->setCellValue('AA1', 'Site Remark');
-  $objSheet->setCellValue('AB1', 'User Name');
-  $objSheet->setCellValue('AC1', 'Password');
-
-  $objSheet->setCellValue('AD1', 'Router Id');
-  $objSheet->setCellValue('AE1', 'SIM Number');
-  $objSheet->setCellValue('AF1', 'SIM Owner');
-  $objSheet->setCellValue('AG1', 'Router Brand');
-  $objSheet->setCellValue('AH1', 'Live Status');
-  $objSheet->setCellValue('AI1', 'OLD ATMID');
-
-
-
-  $objSheet->getStyle('Q')->getAlignment()->setWrapText(true);
   $sqry = mysqli_query($conn, $qry);
+
   $num = mysqli_num_rows($sqry);
 
 
@@ -349,6 +410,7 @@ if ($qrydata == "RMS") {
   $srn = 1;
   $apptotamt = 0;
   $row = 2;
+
   while ($rowarr = mysqli_fetch_array($sqry)) {
     $sql1 = "select * from esurvsites where ATM_ID='" . $rowarr["ATMID"] . "'";
 
@@ -369,106 +431,122 @@ if ($qrydata == "RMS") {
       $simowner = '';
       $router_brand = '';
     }
+    
+    $array_row = array();
+    array_push($array_row,$srn);  
+    array_push($array_row,$rowarr['Customer']);
+    array_push($array_row,$rowarr['Bank']);
+    array_push($array_row,$rowarr['TrackerNo']);
+    array_push($array_row,$rowarr['ATMID']);
+    array_push($array_row,$rowarr['ATMID_2']);
+    array_push($array_row,$rowarr['ATMShortName']);
 
+    array_push($array_row,$rowarr['SiteAddress']);
+    array_push($array_row,$rowarr['City']);
+    array_push($array_row,$rowarr['State']);
+    array_push($array_row,$rowarr['Zone']);
+    array_push($array_row,$rowarr['PanelIP']);
+    array_push($array_row,$rowarr['DVRIP']);
+    array_push($array_row,$rowarr['DVRName']);
+    array_push($array_row,$rowarr['DVR_Model_num']);
 
+    array_push($array_row,$rowarr['DVR_Serial_num']);
+    array_push($array_row,$rowarr['CTSLocalBranch']);
+    array_push($array_row,$rowarr['CTS_BM_Name']);
+    array_push($array_row,$rowarr['CTS_BM_Number']);
+    array_push($array_row,$rowarr['HDD']);
+    array_push($array_row,$rowarr['Camera1']);
+    array_push($array_row,$rowarr['Camera2']);
+    array_push($array_row,$rowarr['Camera3']);
+    
+    array_push($array_row,$rowarr['Attachment1']);
+    array_push($array_row,$rowarr['Attachment2']);
+    array_push($array_row,$rowarr['liveDate']);
+    array_push($array_row,$rowarr['site_remark']);
+    array_push($array_row,$rowarr['UserName']);
+    
+    array_push($array_row,$rowarr['Password']);
+    array_push($array_row,$router_id);
+    array_push($array_row,getsiminfo($rowarr['ATMID'], 'simnnumber'));
+    array_push($array_row,getsiminfo($rowarr['ATMID'], 'simowner'));
+    array_push($array_row,$router_brand);
 
+    array_push($array_row,$rowarr['live']);
+    array_push($array_row,$rowarr['old_atmid']);
+    
+        
+    $i++;
+    $serial_number++;
 
-    $objSheet->setCellValueByColumnAndRow(0, $row, $srn);
-    $objSheet->setCellValueByColumnAndRow(1, $row, $rowarr['Customer']);
-    $objSheet->setCellValueByColumnAndRow(2, $row, $rowarr['Bank']);
-    $objSheet->setCellValueByColumnAndRow(3, $row, $rowarr['TrackerNo']);
-    $objSheet->setCellValueByColumnAndRow(4, $row, $rowarr['ATMID']);
-    $objSheet->setCellValueByColumnAndRow(5, $row, $rowarr['ATMID_2']);
-    $objSheet->setCellValueByColumnAndRow(6, $row, $rowarr['ATMShortName']);
-    $objSheet->setCellValueByColumnAndRow(7, $row, $rowarr['SiteAddress']);
-    $objSheet->setCellValueByColumnAndRow(8, $row, $rowarr['City']);
-    $objSheet->setCellValueByColumnAndRow(9, $row, $rowarr['State']);
-    $objSheet->setCellValueByColumnAndRow(10, $row, $rowarr['Zone']);
-    $objSheet->setCellValueByColumnAndRow(11, $row, $rowarr['PanelIP']);
-    $objSheet->setCellValueByColumnAndRow(12, $row, $rowarr['DVRIP']);
-
-
-    $objSheet->setCellValueByColumnAndRow(13, $row, $rowarr['DVRName']);
-    $objSheet->setCellValueByColumnAndRow(14, $row, $rowarr['DVR_Model_num']);
-    $objSheet->setCellValueByColumnAndRow(15, $row, $rowarr['DVR_Serial_num']);
-    $objSheet->setCellValueByColumnAndRow(16, $row, $rowarr['CTSLocalBranch']);
-    $objSheet->setCellValueByColumnAndRow(17, $row, $rowarr['CTS_BM_Name']);
-    $objSheet->setCellValueByColumnAndRow(18, $row, $rowarr['CTS_BM_Number']);
-    $objSheet->setCellValueByColumnAndRow(19, $row, $rowarr['HDD']);
-    $objSheet->setCellValueByColumnAndRow(20, $row, $rowarr['Camera1']);
-
-    $objSheet->setCellValueByColumnAndRow(21, $row, $rowarr['Camera2']);
-    $objSheet->setCellValueByColumnAndRow(22, $row, $rowarr['Camera3']);
-    $objSheet->setCellValueByColumnAndRow(23, $row, $rowarr['Attachment1']);
-    $objSheet->setCellValueByColumnAndRow(24, $row, $rowarr['Attachment2']);
-    $objSheet->setCellValueByColumnAndRow(25, $row, $rowarr['liveDate']);
-    $objSheet->setCellValueByColumnAndRow(26, $row, $rowarr['site_remark']);
-    $objSheet->setCellValueByColumnAndRow(27, $row, $rowarr['UserName']);
-    $objSheet->setCellValueByColumnAndRow(28, $row, $rowarr['Password']);
-
-    $objSheet->setCellValueByColumnAndRow(29, $row, $router_id);
-
-    $objSheet->setCellValueByColumnAndRow(30, $row, getsiminfo($rowarr['ATMID'], 'simnnumber'));
-    $objSheet->setCellValueByColumnAndRow(31, $row, getsiminfo($rowarr['ATMID'], 'simowner'));
-
-    $objSheet->setCellValueByColumnAndRow(32, $row, $router_brand);
-    $objSheet->setCellValueByColumnAndRow(33, $row, $rowarr['live']);
-    $objSheet->setCellValueByColumnAndRow(34, $row, $rowarr['old_atmid']);
 
     $row++;
     $srn++;
+
+     fputcsv($fp, $array_row);
   }
+
+
+  // Create a writer to save the Excel file
+  $writer = new Xlsx($spreadsheet);
+
+  mysqli_close($con);
+  exit();
 } else if ($qrydata == "Cloud") {
 
-  $objSheet->setCellValue('A1', 'Sr No');
-  $objSheet->setCellValue('B1', 'Customer');
-  $objSheet->setCellValue('C1', 'Bank');
-  $objSheet->setCellValue('D1', 'Tracker No');
-  $objSheet->setCellValue('E1', 'ATMID');
-  $objSheet->setCellValue('F1', 'ATMID_2');
-  $objSheet->setCellValue('G1', 'ATMShortName');
-  $objSheet->setCellValue('H1', 'SiteAddress');
-  $objSheet->setCellValue('I1', 'City');
-  $objSheet->setCellValue('J1', 'State');
-  $objSheet->setCellValue('K1', 'Zone');
-  $objSheet->setCellValue('L1', 'PanelIP');
-  $objSheet->setCellValue('M1', 'DVRIP');
-  $objSheet->setCellValue('N1', 'DVRName');
-  $objSheet->setCellValue('O1', 'DVR_Model_num');
-  $objSheet->setCellValue('P1', 'DVR_Serial_num');
-  $objSheet->setCellValue('Q1', 'CTSLocalBranch');
-  $objSheet->setCellValue('R1', 'CTS_BM_Name');
-  $objSheet->setCellValue('S1', 'CTS_BM_Number');
-  $objSheet->setCellValue('T1', 'HDD');
-  $objSheet->setCellValue('U1', 'Camera1');
-  $objSheet->setCellValue('V1', 'Camera2');
-  $objSheet->setCellValue('W1', 'Camera3');
-  $objSheet->setCellValue('X1', 'Attachment1');
-  $objSheet->setCellValue('Y1', 'Attachment2');
-  $objSheet->setCellValue('Z1', 'LiveDate');
-  $objSheet->setCellValue('AA1', 'Site Remark');
-  $objSheet->setCellValue('AB1', 'User Name');
-  $objSheet->setCellValue('AC1', 'Password');
-  $objSheet->setCellValue('AD1', 'Router Id');
-  $objSheet->setCellValue('AE1', 'SIM Number');
-  $objSheet->setCellValue('AF1', 'SIM Owner');
-  $objSheet->setCellValue('AG1', 'Router Brand');
-  $objSheet->setCellValue('AH1', 'Tracker');
-  $objSheet->setCellValue('AI1', 'BM Name');
-  $objSheet->setCellValue('AJ1', 'Engineer Name');
-  $objSheet->setCellValue('AK1', 'Status Date');
-
-  $objSheet->setCellValue('AL1', 'OLD ATMID');
-  $objSheet->setCellValue('AM1', 'Installation Date');
-  $objSheet->setCellValue('AN1', 'Status');
+     $filename = "Cloud_SITES.csv";
+   $fp = fopen('php://output', 'w');
 
 
+      $headers = array(
+        'Sr No',
+        'Customer',
+        'Bank',
+        'Tracker No',
+        'ATMID',
+        'ATMID_2',
+        'ATMShortName',
+        'SiteAddress',
+        'City',
+        'State',
+        'Zone',
+        'PanelIP',
+        'DVRIP',
+        'DVRName',
+        'DVR_Model_num',
+        'DVR_Serial_num',
+        'CTSLocalBranch',
+        'CTS_BM_Name',
+        'CTS_BM_Number',
+        'HDD',
+        'Camera1',
+        'Camera2',
+        'Camera3',
+        'Attachment1',
+        'Attachment2',
+        'LiveDate',
+        'Site Remark',
+        'User Name',
+        'Password',
+        'Router Id',
+        'SIM Number',
+        'SIM Owner',
+        'Router Brand',
+        'Tracker',
+        'BM Name',
+        'Engineer Name',
+        'Status Date',
+        'OLD ATMID',
+        'Installation Date',
+        'Status'
+      );
 
 
+  header('Content-type: application/csv');
+  header('Content-Disposition: attachment; filename=' . $filename);
+  fputcsv($fp, $headers);
 
-
-  $objSheet->getStyle('Q')->getAlignment()->setWrapText(true);
   $sqry = mysqli_query($conn, $qry);
+
   $num = mysqli_num_rows($sqry);
 
 
@@ -508,91 +586,64 @@ if ($qrydata == "RMS") {
     $statusDate = $dvronline_details_result['statusDate'];
 
 
-
-
-    $objSheet->setCellValueByColumnAndRow(0, $row, $srn);
-    $objSheet->setCellValueByColumnAndRow(1, $row, $rowarr['customer']);
-    $objSheet->setCellValueByColumnAndRow(2, $row, "NA");
-    $objSheet->setCellValueByColumnAndRow(3, $row, "NA");
-    $objSheet->setCellValueByColumnAndRow(4, $row, $rowarr['ATMID']);
-    $objSheet->setCellValueByColumnAndRow(5, $row, "NA");
-    $objSheet->setCellValueByColumnAndRow(6, $row, $rowarr['Address']);
-    $objSheet->setCellValueByColumnAndRow(7, $row, $rowarr['Location']);
-    $objSheet->setCellValueByColumnAndRow(8, $row, $rowarr['city']);
-    $objSheet->setCellValueByColumnAndRow(9, $row, $rowarr['State']);
-    $objSheet->setCellValueByColumnAndRow(10, $row, $rowarr['zone']);
-    $objSheet->setCellValueByColumnAndRow(11, $row, $rowarr['IPAddress']);
-
-    $objSheet->setCellValueByColumnAndRow(12, $row, $rowarr['IPAddress']);
-    $objSheet->setCellValueByColumnAndRow(13, $row, $rowarr['dvrname']);
-    $objSheet->setCellValueByColumnAndRow(14, $row, "NA");
-    $objSheet->setCellValueByColumnAndRow(15, $row, "NA");
-    $objSheet->setCellValueByColumnAndRow(16, $row, "NA");
-    $objSheet->setCellValueByColumnAndRow(17, $row, "NA");
-    $objSheet->setCellValueByColumnAndRow(18, $row, "NA");
-    $objSheet->setCellValueByColumnAndRow(19, $row, "NA");
-    $objSheet->setCellValueByColumnAndRow(20, $row, "NA");
-
-    $objSheet->setCellValueByColumnAndRow(21, $row, "NA");
-    $objSheet->setCellValueByColumnAndRow(22, $row, "NA");
-    $objSheet->setCellValueByColumnAndRow(23, $row, "NA");
-    $objSheet->setCellValueByColumnAndRow(24, $row, "NA");
-    $objSheet->setCellValueByColumnAndRow(25, $row, $rowarr['Live Date']);
-    $objSheet->setCellValueByColumnAndRow(26, $row, "NA");
-    $objSheet->setCellValueByColumnAndRow(27, $row, $rowarr['UserName']);
-    $objSheet->setCellValueByColumnAndRow(28, $row, $rowarr['Password']);
-
-
-    $objSheet->setCellValueByColumnAndRow(29, $row, $router_id);
-
-    $objSheet->setCellValueByColumnAndRow(30, $row, getsiminfo($rowarr['ATMID'], 'simnnumber'));
-    $objSheet->setCellValueByColumnAndRow(31, $row, getsiminfo($rowarr['ATMID'], 'simowner'));
-
-    $objSheet->setCellValueByColumnAndRow(32, $row, $router_brand);
-
-
-    $objSheet->setCellValueByColumnAndRow(33, $row, $tracker);
-    $objSheet->setCellValueByColumnAndRow(34, $row, $bmName);
-    $objSheet->setCellValueByColumnAndRow(35, $row, $engineerName);
-    $objSheet->setCellValueByColumnAndRow(36, $row, $statusDate);
-
-    $objSheet->setCellValueByColumnAndRow(37, $row, $rowarr['old_atm']);
-    $objSheet->setCellValueByColumnAndRow(38, $row, $rowarr['installationDate']);
-    $objSheet->setCellValueByColumnAndRow(39, $row, $rowarr['Status']);
+   $array_row = array();
+    array_push($array_row,$srn);  
+    array_push($array_row,$rowarr['customer']);
+    array_push($array_row,$rowarr['Bank']);
+    array_push($array_row,"NA");
+    array_push($array_row,$rowarr['ATMID']);
+    array_push($array_row,"NA");
+    array_push($array_row,$rowarr['Address']);
+    array_push($array_row,$rowarr['Location']);
+    array_push($array_row,$rowarr['city']);
+    array_push($array_row,$rowarr['State']);
+    array_push($array_row,$rowarr['zone']);
+    array_push($array_row,$rowarr['IPAddress']);
+    array_push($array_row,$rowarr['IPAddress']);
+    array_push($array_row,$rowarr['dvrname']);
+    array_push($array_row,"NA");
+    array_push($array_row,"NA");
+    array_push($array_row,"NA");
+    array_push($array_row,"NA");
+    array_push($array_row,"NA");
+    array_push($array_row,"NA");
+    array_push($array_row,"NA");
+    array_push($array_row,"NA");
+    array_push($array_row,"NA");
+    array_push($array_row,"NA");
+    array_push($array_row,"NA");
+    array_push($array_row,$rowarr['Live Date']);
+    array_push($array_row,"NA");
+    array_push($array_row,$rowarr['UserName']);
+    array_push($array_row,$rowarr['Password']);
+    array_push($array_row,$router_id);
+    array_push($array_row,getsiminfo($rowarr['ATMID'], 'simnnumber'));
+    array_push($array_row,getsiminfo($rowarr['ATMID'], 'simowner'));
+    array_push($array_row,$router_brand);
+    array_push($array_row,$tracker);
+    array_push($array_row,$bmName);
+    array_push($array_row,$engineerName);
+    array_push($array_row,$statusDate);
+    array_push($array_row,$rowarr['old_atm']);
+    array_push($array_row,$rowarr['installationDate']);
+    array_push($array_row,$rowarr['Status']);
     
-    
+        
+    $i++;
+    $serial_number++;
 
 
     $row++;
     $srn++;
+
+    fputcsv($fp, $array_row);
+
+    
   }
+  
+  $writer = new Xlsx($spreadsheet);
+
+  mysqli_close($con);
+  exit();
+
 }
-
-
-
-$contents = strip_tags($contents);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-$lastrow = intval($srn) + intval(1);
-
-//$objSheet->getStyle('A1:AD1')->getFont()->setBold(true)->setSize(12);
-$highestRow = $objSheet->getHighestRow();
-$objSheet->setCellValueByColumnAndRow(19, $lastrow, $apptotamt);
-
-header("Content-Disposition: attachment; filename=sites.xls");
-header("Content-Type: application/vnd.ms-excel");
-
-$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
-$objWriter->save("php://output");

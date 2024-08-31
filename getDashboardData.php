@@ -3,7 +3,6 @@ include('config.php');
 
 $data = array(); // Create an array to store the data
 
-
 $grandtotalOpenAlerts = 0;
 $grandtotalCloseAlerts = 0;
 $grandtotalAlerts = 0;
@@ -13,7 +12,6 @@ $grandtotalCritical = 0;
 
 $date = date('Y-m-d');
 $nextDay = date('Y-m-d', strtotime($date . ' +1 day'));
-
 
 $Shift = $_REQUEST['shift'];
 
@@ -25,95 +23,68 @@ if ($Shift == "1") {
     $ShiftWise = " '$date 23:00:00' and '$nextDay 06:59:59' ";
 }
 
-
-
-
 $allCriticalAlerts = array(
     'Panic Button', 'ATM Hood door', 'ATM2 Chest Door', 'ATM1 and 2 Hood Door', 'Panic Switch',
     'ATM1 Chest Door Sensor', 'ATM 2 Chest Door Open', 'Unauthorize Card', 'ATM3 Chest Door Open', 'ATM2 Chest Door Open', 'ATM1 Chest Door Open',
     'ATM1 Chest door', 'ATM 2 Hood Door Sensor', 'ATM 1 Hood Door Sensor', 'ATM 1 Vibration'
 );
 
-$sql = mysqli_query($conn, "select * from alertscount where status=1");
-while ($sqlResult = mysqli_fetch_assoc($sql)) {
 
-    $terminal = $sqlResult['ip'];
+// Fetch terminals and users from alertscount table
+$sql = mysqli_query($conn, "SELECT ip AS terminal, userid FROM alertscount WHERE status=1");
+
+while ($sqlResult = mysqli_fetch_assoc($sql)) {
+    $terminal = $sqlResult['terminal'];
     $userid = $sqlResult['userid'];
 
-    $getuser = mysqli_query($conn, "select * from loginusers where id ='" . $userid . "'");
+    // Fetch username from loginusers table
+    $getuser = mysqli_query($conn, "SELECT name FROM loginusers WHERE id ='" . $userid . "'");
     $getuserResult = mysqli_fetch_assoc($getuser);
     $username = $getuserResult['name'];
 
-    // echo "SELECT count(1) as openAlerts FROM `alerts` WHERE `status` LIKE 'O' and sendtoclient='S' and 
-    // sendip='" . $terminal . "' and receivedtime BETWEEN $ShiftWise " ; 
+    // Query to fetch open and close alerts, including critical alerts
+    $alertSql = "
+        SELECT 
+            SUM(CASE WHEN status LIKE 'O' THEN 1 ELSE 0 END) AS openAlerts,
+            SUM(CASE WHEN status LIKE 'C' THEN 1 ELSE 0 END) AS closeAlerts,
+            SUM(CASE WHEN status LIKE 'O' AND critical_alerts='y' THEN 1 ELSE 0 END) AS criticalOpen,
+            SUM(CASE WHEN status LIKE 'C' AND critical_alerts='y' THEN 1 ELSE 0 END) AS criticalClose
+        FROM alerts
+        WHERE sendtoclient='S'
+        AND (sendip='$terminal' OR sip2='$terminal')
+        AND receivedtime BETWEEN $ShiftWise
+    ";
 
-    $alertSql = mysqli_query($conn, "SELECT count(1) as openAlerts FROM `alerts` WHERE `status` LIKE 'O' and sendtoclient='S' and 
-    sendip='" . $terminal . "' and receivedtime BETWEEN $ShiftWise ");
-    $alertSqlResult = mysqli_fetch_assoc($alertSql);
-    $openAlerts = $alertSqlResult['openAlerts'];
+    $alertResult = mysqli_query($conn, $alertSql);
+    $alertData = mysqli_fetch_assoc($alertResult);
 
-    $alertSql2 = mysqli_query($conn, "SELECT count(1) as openAlerts2 FROM `alerts` WHERE `status` LIKE 'O' and sendtoclient='S' and sip2='" . $terminal . "'   and receivedtime BETWEEN $ShiftWise ");
-    $alertSqlResult2 = mysqli_fetch_assoc($alertSql2);
-    $openAlerts2 = $alertSqlResult2['openAlerts2'];
-
-    $totalOpenAlerts = $openAlerts + $openAlerts2;
-
-    // echo "SELECT count(1) as closeAlerts FROM `alerts` WHERE `status` LIKE 'C' and sendip='".$terminal."' and sendtoclient='S' and receivedtime BETWEEN $ShiftWise " ; 
-    $alertSqlClose = mysqli_query($conn, "SELECT count(1) as closeAlerts FROM `alerts` WHERE `status` LIKE 'C' and sendip='" . $terminal . "' and sendtoclient='S' and receivedtime BETWEEN $ShiftWise ");
-    $alertSqlCloseResult = mysqli_fetch_assoc($alertSqlClose);
-    $closeAlerts = $alertSqlCloseResult['closeAlerts'];
-
-    $alertSqlClose2 = mysqli_query($conn, "SELECT count(1) as closeAlerts2 FROM `alerts` WHERE `status` LIKE 'C' and sip2='" . $terminal . "' and sendtoclient='S'   and receivedtime BETWEEN $ShiftWise ");
-    $alertSqlCloseResult2 = mysqli_fetch_assoc($alertSqlClose2);
-    $closeAlerts2 = $alertSqlCloseResult2['closeAlerts2'];
-
-    $totalCloseAlerts = $closeAlerts + $closeAlerts2;
-
+    $totalOpenAlerts = $alertData['openAlerts'];
+    $totalCloseAlerts = $alertData['closeAlerts'];
     $totalAlerts = $totalOpenAlerts + $totalCloseAlerts;
+    
+    $totalCriticalOpen = $alertData['criticalOpen'];
+    $totalCloseCriticalAlert = $alertData['criticalClose'];
+    $totalCritical = $totalCriticalOpen + $totalCloseCriticalAlert;
 
-    $alertSqlcritical = mysqli_query($conn, "SELECT count(1) as criticalAlerts FROM `alerts` WHERE `status` LIKE 'O' and sendtoclient='S' and sendip='" . $terminal . "' and alerttype IN ('" . implode("','", $allCriticalAlerts) . "')  and receivedtime BETWEEN $ShiftWise ");
-    $alertSqlcriticalResult = mysqli_fetch_assoc($alertSqlcritical);
-    $criticalAlerts = $alertSqlcriticalResult['criticalAlerts'];
-
-    $alertSqlcritical2 = mysqli_query($conn, "SELECT count(1) as criticalAlerts2 FROM `alerts` WHERE `status` LIKE 'O' and sendtoclient='S' and sip2='" . $terminal . "' and alerttype IN ('" . implode("','", $allCriticalAlerts) . "')  and receivedtime BETWEEN $ShiftWise ");
-    $alertSqlcriticalResult2 = mysqli_fetch_assoc($alertSqlcritical2);
-    $criticalAlerts2 = $alertSqlcriticalResult2['criticalAlerts2'];
-
-    $toalCriticalOpen = $criticalAlerts + $criticalAlerts2;
-
-    $alertSqlClosecritical = mysqli_query($conn, "SELECT count(1) as closeAlertsCritical FROM `alerts` WHERE `status` LIKE 'C' and sendip='" . $terminal . "' and sendtoclient='S' and alerttype IN ('" . implode("','", $allCriticalAlerts) . "')  and receivedtime BETWEEN $ShiftWise ");
-    $alertSqlClosecriticalResult = mysqli_fetch_assoc($alertSqlClosecritical);
-    $closeAlertsCritical = $alertSqlClosecriticalResult['closeAlertsCritical'];
-
-    $alertSqlClosecritical2 = mysqli_query($conn, "SELECT count(1) as closeAlertsCritical2 FROM `alerts` WHERE `status` LIKE 'C' and sip2='" . $terminal . "' and sendtoclient='S'  and alerttype IN ('" . implode("','", $allCriticalAlerts) . "')  and receivedtime BETWEEN $ShiftWise ");
-    $alertSqlClosecriticalResult2 = mysqli_fetch_assoc($alertSqlClosecritical2);
-    $closeAlertsCritical2 = $alertSqlClosecriticalResult2['closeAlertsCritical2'];
-
-    $totalCloseCriticalAlert = $closeAlertsCritical + $closeAlertsCritical2;
-
-    $totalCritical = $toalCriticalOpen + $totalCloseCriticalAlert;
-
-    $row = array(
+    // Prepare data for each terminal
+    $data[] = array(
         'username' => ucwords($username),
         'terminal' => $terminal,
         'open' => $totalOpenAlerts,
         'close' => $totalCloseAlerts,
         'total' => $totalAlerts,
-        'criticalopen' => $toalCriticalOpen,
+        'criticalopen' => $totalCriticalOpen,
         'criticalClose' => $totalCloseCriticalAlert,
         'totalCritical' => $totalCritical,
     );
 
-
-    $grandtotalOpenAlerts = $grandtotalOpenAlerts + $totalOpenAlerts;
-    $grandtotalCloseAlerts = $grandtotalCloseAlerts + $totalCloseAlerts;
-    $grandtotalAlerts = $grandtotalAlerts + $totalAlerts;
-    $grandtoalCriticalOpen = $grandtoalCriticalOpen + $toalCriticalOpen;
-    $grandtotalCloseCriticalAlert = $grandtotalCloseCriticalAlert + $totalCloseCriticalAlert;
-    $grandtotalCritical = $grandtotalCritical + $totalCritical;
-
-
-    $data[] = $row;
+    // Accumulate grand totals
+    $grandtotalOpenAlerts += $totalOpenAlerts;
+    $grandtotalCloseAlerts += $totalCloseAlerts;
+    $grandtotalAlerts += $totalAlerts;
+    $grandtoalCriticalOpen += $totalCriticalOpen;
+    $grandtotalCloseCriticalAlert += $totalCloseCriticalAlert;
+    $grandtotalCritical += $totalCritical;
 }
 
 $total = [
@@ -129,3 +100,4 @@ $total = [
 // Return the data as JSON
 header('Content-Type: application/json');
 echo json_encode($total);
+?>

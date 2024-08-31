@@ -221,6 +221,11 @@ class Worksheet extends WriterPart
             $objWriter->writeAttribute('zoomScaleNormal', $pSheet->getSheetView()->getZoomScaleNormal());
         }
 
+        // Show zeros (Excel also writes this attribute only if set to false)
+        if ($pSheet->getSheetView()->getShowZeros() === false) {
+            $objWriter->writeAttribute('showZeros', 0);
+        }
+
         // View Layout Type
         if ($pSheet->getSheetView()->getView() !== SheetView::SHEETVIEW_NORMAL) {
             $objWriter->writeAttribute('view', $pSheet->getSheetView()->getView());
@@ -251,14 +256,15 @@ class Worksheet extends WriterPart
         // Pane
         $pane = '';
         if ($pSheet->getFreezePane()) {
-            list($xSplit, $ySplit) = Coordinate::coordinateFromString($pSheet->getFreezePane());
+            $split = Coordinate::coordinateFromString($pSheet->getFreezePane());
+$xSplit = $split[0];
+$ySplit = $split[1];
+
             $xSplit = Coordinate::columnIndexFromString($xSplit);
             --$xSplit;
             --$ySplit;
 
             $topLeftCell = $pSheet->getTopLeftCell();
-            $activeCell = $topLeftCell;
-            $sqref = $topLeftCell;
 
             // pane
             $pane = 'topRight';
@@ -522,6 +528,9 @@ class Worksheet extends WriterPart
                     } elseif ($conditional->getConditionType() == Conditional::CONDITION_CONTAINSBLANKS) {
                         // formula copied from ms xlsx xml source file
                         $objWriter->writeElement('formula', 'LEN(TRIM(' . $cellCoordinate . '))=0');
+                    } elseif ($conditional->getConditionType() == Conditional::CONDITION_NOTCONTAINSBLANKS) {
+                        // formula copied from ms xlsx xml source file
+                        $objWriter->writeElement('formula', 'LEN(TRIM(' . $cellCoordinate . '))>0');
                     }
 
                     $objWriter->endElement();
@@ -752,7 +761,10 @@ class Worksheet extends WriterPart
             $range = Coordinate::splitRange($autoFilterRange);
             $range = $range[0];
             //    Strip any worksheet ref
-            list($ws, $range[0]) = PhpspreadsheetWorksheet::extractSheetTitle($range[0], true);
+            $rangeParts = PhpspreadsheetWorksheet::extractSheetTitle($range[0], true);
+            $ws = $rangeParts[0];
+            $range[0] = $rangeParts[1];
+            
             $range = implode(':', $range);
 
             $objWriter->writeAttribute('ref', str_replace('$', '', $range));
@@ -1105,7 +1117,8 @@ class Worksheet extends WriterPart
                     break;
                 case 'f':            // Formula
                     $attributes = $pCell->getFormulaAttributes();
-                    if ($attributes['t'] === 'array') {
+                    if (isset($attributes['t']) && $attributes['t'] === 'array') {
+
                         $objWriter->startElement('f');
                         $objWriter->writeAttribute('t', 'array');
                         $objWriter->writeAttribute('ref', $pCellAddress);
@@ -1130,8 +1143,15 @@ class Worksheet extends WriterPart
 
                     break;
                 case 'n':            // Numeric
-                    // force point as decimal separator in case current locale uses comma
-                    $objWriter->writeElement('v', str_replace(',', '.', $cellValue));
+                    //force a decimal to be written if the type is float
+                    if (is_float($cellValue)) {
+                        // force point as decimal separator in case current locale uses comma
+                        $cellValue = str_replace(',', '.', (string) $cellValue);
+                        if (strpos($cellValue, '.') === false) {
+                            $cellValue = $cellValue . '.0';
+                        }
+                    }
+                    $objWriter->writeElement('v', $cellValue);
 
                     break;
                 case 'b':            // Boolean
@@ -1161,27 +1181,26 @@ class Worksheet extends WriterPart
      * @param bool $includeCharts Flag indicating if we should include drawing details for charts
      */
     private function writeDrawings(XMLWriter $objWriter, PhpspreadsheetWorksheet $pSheet, $includeCharts = false)
-    {
-        $unparsedLoadedData = $pSheet->getParent()->getUnparsedLoadedData();
-        $hasUnparsedDrawing = isset($unparsedLoadedData['sheets'][$pSheet->getCodeName()]['drawingOriginalIds']);
-        $chartCount = ($includeCharts) ? $pSheet->getChartCollection()->count() : 0;
-        if ($chartCount == 0 && $pSheet->getDrawingCollection()->count() == 0 && !$hasUnparsedDrawing) {
-            return;
-        }
-
-        // If sheet contains drawings, add the relationships
-        $objWriter->startElement('drawing');
-
-        $rId = 'rId1';
-        if (isset($unparsedLoadedData['sheets'][$pSheet->getCodeName()]['drawingOriginalIds'])) {
-            $drawingOriginalIds = $unparsedLoadedData['sheets'][$pSheet->getCodeName()]['drawingOriginalIds'];
-            // take first. In future can be overriten
-            $rId = reset($drawingOriginalIds);
-        }
-
-        $objWriter->writeAttribute('r:id', $rId);
-        $objWriter->endElement();
+{
+    $unparsedLoadedData = $pSheet->getParent()->getUnparsedLoadedData();
+    $hasUnparsedDrawing = isset($unparsedLoadedData['sheets'][$pSheet->getCodeName()]['drawingOriginalIds']);
+    $chartCount = ($includeCharts) ? $pSheet->getChartCollection()->count() : 0;
+    if ($chartCount == 0 && $pSheet->getDrawingCollection()->count() == 0 && !$hasUnparsedDrawing) {
+        return;
     }
+
+    $objWriter->startElement('drawing');
+
+    $rId = 'rId1';
+    if (isset($unparsedLoadedData['sheets'][$pSheet->getCodeName()]['drawingOriginalIds'])) {
+        $drawingOriginalIds = $unparsedLoadedData['sheets'][$pSheet->getCodeName()]['drawingOriginalIds'];
+        $rId = reset($drawingOriginalIds);
+    }
+
+    $objWriter->writeAttribute('r:id', $rId);
+    $objWriter->endElement();
+}
+
 
     /**
      * Write LegacyDrawing.

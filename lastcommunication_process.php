@@ -19,28 +19,7 @@ $healthfetch=mysqli_fetch_array($runhelth);
 
 
 $blanck_date = date('Y-m-d', strtotime($healthfetch[0] .' -1 day'));
-//$from=$_POST['from'];
-//$to=$_POST['to'];
-//$strPage=$_POST['Page'];
-//$fix=30;
-/*            if($from!="")
-            {
-            //$newDate = date_format($date,"y/m/d H:i:s");
-            $fromdt = date("Y-m-d", strtotime($from));
-            }
-            else
-            {
-                $fromdt="";
-            }
-                if($to!="")
-                {
-                $todt = date("Y-m-d", strtotime($to));
-                }else
-                {
-                   $todt=""; 
-                }
-*/
- $sr=0;
+$sr=0;
  
 date_default_timezone_set('Asia/Kolkata');
 $currtime=date('Y-m-d');
@@ -49,62 +28,6 @@ $pre_date2 = date('Y-m-d', strtotime($currtime .' -2 day'));
 $pre_date7 = date('Y-m-d', strtotime($currtime .' -7 day'));
 $pre_date15 = date('Y-m-d', strtotime($currtime .' -15 day'));
   
-
-//$abc="select Customer,atmid,ATMShortName,state,panel_make,OLDPanelid,dvrip,dvrname,username,password from sites where live='Y'";
-
-?>
-<?php
-/*
-    $result=mysqli_query($conn,$abc);
-    
-     $Num_Rows=mysqli_num_rows($result);
-  
-    $Per_Page =$_POST['perpg'];   // Records Per Page
-
-$Page = $strPage;
-
-if($strPage=="")
-{
-	$Page=1;
-}
- 
-$Prev_Page = $Page-1;
-$Next_Page = $Page+1;
-
-
-$Page_Start = (($Per_Page*$Page)-$Per_Page);
-if($Num_Rows<=$Per_Page)
-{
-	$Num_Pages =1;
-}
-else if(($Num_Rows % $Per_Page)==0)
-{
-	$Num_Pages =($Num_Rows/$Per_Page) ;
-}
-else
-{
-	$Num_Pages =($Num_Rows/$Per_Page)+1;
-	$Num_Pages = (int)$Num_Pages;
-}
-
-$abc.=" LIMIT $Page_Start , $Per_Page";
-	
-$qrys=mysqli_query($conn,$abc);
-
-	$count=mysqli_num_rows($qrys);
-
-$sr=1;
-	if($Page=="1" or $Page=="")
-	{
-	$sr="1";
-	}else
-	{
-	 //   echo $Page_Start."-".$Page."-".$Page_Start;
-	   $sr=($fix* $Page)-$fix;
-	   
-	   $sr=$sr+1;
-	}
-*/
 ?>
 
 <html>
@@ -131,7 +54,6 @@ tr,th{
 }
 </style>
 
-<!--<div align="center">total records:<?php echo $Num_Rows?></div>-->
   <table border=1 style="margin-top:30px">
   <tr>
   <th>sr</th>
@@ -151,61 +73,20 @@ tr,th{
 	 <th>Bm Number</th>
 	 <th>Zone</th>
   </tr>
-  <?php
-  /*
-  $ip=array();
-  while($row = mysqli_fetch_array($result)) { 
-  
-  $lastCom="select max(rtime) from wsites where ip='/".$row[6]."'";
-  $run= mysqli_query($conn,$lastCom);
-  $fetlast=mysqli_fetch_array($run);
- //echo "ram".$fetlast[0];
-  $ip[]=$row["dvrip"];
-  
-  ?>
- 
- <tr style="background-color:#cfe8c7">
-    <td><?php echo $sr;?></td>
-    <td><?php echo $row["Customer"];?></td>
-    <td><?php echo $row["atmid"];?></td>
-    <td><?php echo $row["ATMShortName"];?></td>
-    <td><?php echo $row["state"];?></td>
-    <td><?php echo $row["panel_make"];?></td>
-	 <td><?php echo $row["OLDPanelid"];?></td>
-    <td><?php echo $row["dvrip"];?></td>
-    <td><?php echo $row["dvrname"];?></td>
-    <td><?php echo $fetlast[0];?></td>
-    
-</tr>
-<?php
-
-$sr++;
-
-}
-
- $cat=implode(",",$ip);
-//echo $cat;
- $a=count($ip);
- //echo $a;
- $cat2=explode(",",$cat);
-//print_r($cat2); 
-*/
- ?> 
+   
   <?php 
 
 if($comm=="1"){
     
     
-    //$sp="select distinct(ip) from wsites where rtime between '".$currtime. " 00:00:00" ."' and '".$currtime. " 23:59:59" ."'";
-	//$sp="select Customer,atmid,ATMShortName,state,panel_make,OLDPanelid,dvrip,dvrname,username,password from sites where live='Y'";// where rtime between '".$currtime. " 00:00:00" ."' and '".$currtime. " 23:59:59" ."'";
-    $sp="select oldpanelid,newpanelid from sites where live='Y'";;
-	//echo $sp;
+    $sp="select OLDPanelid,NewPanelID,Customer,atmid,ATMShortName,City,state,panel_make,dvrip,dvrname,username,password,Zone,Bank from sites where live='Y'";;
 	$rst=mysqli_query($conn,$sp);
     $Num_Rows=mysqli_num_rows($rst);
 	
 	?>
     <div align="center">total records:<?php echo $Num_Rows?></div>
     <?php
+	  if(mysqli_num_rows($rst)>0){
      while($fetch=mysqli_fetch_array($rst)){
 		$sq="select ip,rtime from wsites where (panelid='".$fetch[0]."' or panelid='".$fetch[1]."')  and rtime between '".$currtime. " 00:00:00" ."' and '".$currtime. " 23:59:59" ."'";
 		//echo $sq;
@@ -226,8 +107,8 @@ if($comm=="1"){
 	
      <tr style="background-color:#cfe8c7">
     <td><?php echo $sr;?></td>
-    <td><?php echo $fetch2[0];?></td>
-    <td><?php echo $fetch2[1];?></td>
+    <td><?php echo $fetch['Customer'];?></td>
+    <td><?php echo $fetch['Bank'];?></td>
     <td><?php echo $fetch2[2];?></td>
 	<td><?php echo $fetch2[3];;?></td>
     <td><?php echo $fetch2[4];?></td>
@@ -246,94 +127,143 @@ if($comm=="1"){
      $sr++;
 	}
      }  
+   }
 }
 
 
 elseif($comm=="2"){
+ 
+$statement = "
+SELECT 
+    Customer, 
+    Bank, 
+    ATMID, 
+    ATMShortName, 
+    City, 
+    state, 
+    panel_make, 
+    OLDPanelid, 
+    NewPanelId, 
+    dvrip, 
+    dvrname, 
+    Remark, 
+    Zone 
+FROM 
+    (SELECT 
+        s.Customer, 
+        s.Bank, 
+        s.ATMID, 
+        s.ATMShortName, 
+        s.City, 
+        s.state, 
+        s.panel_make, 
+        s.OLDPanelid, 
+        s.NewPanelId, 
+        s.dvrip, 
+        s.dvrname, 
+        CASE WHEN MAX(w.rtime) >= CURDATE() THEN MAX(w.rtime) ELSE 'No today\'s data' END AS Remark, 
+        s.Zone 
+    FROM 
+        sites s 
+    INNER JOIN 
+        sites_server_wise1 ssw ON s.ATMID = ssw.ATMID AND ssw.server_name = 21 
+    LEFT JOIN 
+        wsites w ON s.NewPanelId = w.panelid 
+    WHERE 
+        s.ATMID <> '' 
+    GROUP BY 
+        s.ATMID, 
+        s.SN) AS subquery 
+WHERE 
+    CASE 
+        WHEN STR_TO_DATE(Remark, '%Y-%m-%d %H:%i:%s') IS NULL THEN 1 
+        ELSE CAST(Remark AS DATE) 
+    END <> CURDATE() 
+ORDER BY 
+    Remark ASC;
 
-	$sp="select oldpanelid,newpanelid from sites where live='Y' and DVRName in('CPPLUS','Hikvision','CPPLUS_INDIGO')";
-	//echo $sp;
-	$rst=mysqli_query($conn,$sp);
-    $Num_Rows=mysqli_num_rows($rst);
-	//echo " totalsite-".$Num_Rows."<br>";
-	?>
-    <!--<div align="center">total records:<?php echo $Num_Rows?></div>-->
-    <?php $test="0";
-     while($fetch=mysqli_fetch_array($rst)){
-	
-	$sq="select ip,rtime,panelid from wsites where (panelid='".$fetch[0]."' or panelid='".$fetch[1]."')   and rtime between '".$currtime. " 00:00:00" ."' and '".$currtime. " 23:59:59" ."'";
-		//echo $sq;
-		$runsq=mysqli_query($conn,$sq);
-	
-		if(mysqli_num_rows($runsq)>0){ $test++;continue; }
-	    //$fetch3=mysqli_fetch_array($runsq);
-		//$s= substr($fetch3[0], 1);
-		if($fetch[0]!='-' && $fetch[1]!='-'){
-            $ab="select Customer,atmid,ATMShortName,City,state,panel_make,OLDPanelid,dvrip,dvrname,username,password,NewPanelID,Zone,Bank from sites where live='Y' and (OLDPanelid='".$fetch[0]."' or NewPanelID='".$fetch[1]."')  and DVRName in('CPPLUS','Hikvision','CPPLUS_INDIGO')";
-	//	echo $ab."<br>";
-	}
-		else if($fetch[1]!='-')
-			$ab="select Customer,atmid,ATMShortName,City,state,panel_make,OLDPanelid,dvrip,dvrname,username,password,NewPanelID,Zone,Bank from sites where live='Y' and NewPanelID='".$fetch[1]."'  and DVRName in('CPPLUS','Hikvision','CPPLUS_INDIGO')";
-		else
-		    $ab="select Customer,atmid,ATMShortName,City,state,panel_make,OLDPanelid,dvrip,dvrname,username,password,NewPanelID,Zone,Bank from sites where live='Y' and OLDPanelID='".$fetch[0]."' and DVRName in('CPPLUS','Hikvision','CPPLUS_INDIGO')";
-        $runab=mysqli_query($conn,$ab);
-		$numrow=mysqli_num_rows($runab);
-		
-        $fetch2=mysqli_fetch_array($runab);
-		
-		//echo "Site -". $numrow."-".$fetch2['atmid']."<br>";
-		
-	$q="select max(rtime) from wsites where (panelid='".$fetch[0]."' or panelid='".$fetch[1]."')";
-		//echo $sq;
-		$runq=mysqli_query($conn,$q);
-		//$fet2rows=mysqli_num_rows($runq);
-		
-		$fet2=mysqli_fetch_array($runq);
-		
-		//$timestamp = $row['createtime'];
-$splitTimeStamp = explode(" ",$fet2[0]);
-$date = $splitTimeStamp[0];
-//$time = $splitTimeStamp[1];
-	$sr++;
-	    $bmname="select CSSBM,CSSBMNumber from esurvsites where ATM_ID='".$fetch2[1]."'";
-		$runbmname=mysqli_query($conn,$bmname);
-		$bmfetch=mysqli_fetch_array($runbmname);
+" ; 
+$sql = mysqli_query($conn,$statement);
+$sr = 1; 
+while($sqlResult = mysqli_fetch_assoc($sql)){
+
+    $atmid = $sqlResult['ATMID'];
+
+    $Customer = $sqlResult['Customer'];
+    $Bank = $sqlResult['Bank'];
+    $ATMID = $sqlResult['ATMID'];
+    $ATMShortName = $sqlResult['ATMShortName'];
+    $City = $sqlResult['City'];
+    $state = $sqlResult['state'];
+    $panel_make = $sqlResult['panel_make'];
+    $OLDPanelid = $sqlResult['OLDPanelid'];
+    $NewPanelID = $sqlResult['NewPanelID'];
+    $dvrip = $sqlResult['dvrip'];
+    $dvrname = $sqlResult['dvrname'];
+    $remarkdate = $sqlResult['Remark'];
+    $Zone = $sqlResult['Zone'];
+
+
+
+
+
+    $bmname="select CSSBM,CSSBMNumber from esurvsites where ATM_ID='".$atmid."'";
+    $runbmname=mysqli_query($conn,$bmname);
+    $bmfetch=mysqli_fetch_array($runbmname);
+
+?>
+
+
+    <tr style="background-color:#cfe8c7">
+        <td><?php echo $sr;?></td>
+        <td><?php echo $Customer;?></td>
+        <td><?php echo $Bank;?></td>
+        <td><?php echo $atmid;?></td>
+        <td><?php echo $ATMShortName;?></td>
+        <td><?php echo $City; ?></td>
+        <td><?php echo $State ; ?></td>
+        <td><?php echo $panel_make;?></td>
+        <td><?php echo $OLDPanelid;?></td>
+        <td><?php echo $NewPanelID;?></td>
+        <td><?php echo $dvrip;?></td>
+        <td><?php echo $dvrname;?></td>
+        <td><?php echo $remarkdate;?></td>
+        <td><?php echo $bmfetch[0];?></td>
+        <td><?php echo $bmfetch[1];?></td>
+        <td><?php echo $Zone ;?></td>
+    </tr>
+    <?php
+
+
+$sr++;
+
+}
+
      ?>
 	
-     <tr style="background-color:#cfe8c7">
-    <td><?php echo $sr;?></td>
-    <td><?php echo $fetch2[0];?></td>
-    <td><?php echo $fetch2['Bank'];?></td>
-    <td><?php echo $fetch2[1];?></td>
-    <td><?php echo $fetch2[2];?></td>
-	<td><?php echo $fetch2[3];;?></td>
-    <td><?php echo $fetch2[4];?></td>
-    <td><?php echo $fetch2[5];?></td>
-	<td><?php echo $fetch2[6];?></td>
-	<td><?php echo $fetch2[11];?></td>
-    <td><?php echo $fetch2[7];?></td>
-    <td><?php echo $fetch2[8];?></td>
-	<?php if($fet2[0]!=""){ ?>
-    <td><?php echo $date;?></td>
-	<?php }else{?>
-   <td><?php echo $blanck_date;?></td>
-   <?php }?>
-    <td><?php echo $bmfetch[0];?></td>
-	<td><?php echo $bmfetch[1];?></td>
-	<td><?php echo $fetch2[12];?></td>
-</tr>
-<?php
-
      
-	
-     }
-	// $abs=$sr++;
-	// $absf=$abs -1;
-	 ?><div align="center">total records:<?php echo $sr.'  Skipped -'.$test;?></div>  <?php
+<?php
+     
+  	
+  
+	 $abs=$sr++;
+	 $absf=$abs -1;
+	 $sites_server_wiseCount = mysqli_fetch_assoc(mysqli_query($conn,"SELECT count(1) as totalSites FROM `sites_server_wise1` where server_name=21"))['totalSites'] ; 
+$foundRecords = $sr-1 ;
+    ?>
+
+    <h3 style="text-align:center;">Total Sites : <?php echo $sites_server_wiseCount ;  ?> </h3>
+    <hr>
+
+	 <div align="center">Not Working :<?php echo $foundRecords.'  Working -'.($sites_server_wiseCount - $foundRecords) ;
+     
+     ?></div> 
+
+	 <?php
 }
 	
-elseif($comm=="0"){
-	$sp="select oldpanelid,newpanelid from sites where live='Y'  and DVRName in('CPPLUS','Hikvision','CPPLUS_INDIGO')";;
+else if($comm=="0"){
+	$sp="select OLDPanelid,NewPanelID,Customer,atmid,ATMShortName,City,state,panel_make,dvrip,dvrname,username,password,Bank from sites where live='Y'  and DVRName in('CPPLUS','Hikvision','CPPLUS_INDIGO')";;
 	//echo $sp;
 	$rst=mysqli_query($conn,$sp);
     $Num_Rows=mysqli_num_rows($rst);
@@ -371,17 +301,17 @@ elseif($comm=="0"){
 	
      <tr style="background-color:#cfe8c7">
     <td><?php echo $sr;?></td>
-    <td><?php echo $fetch2[0];?></td>
-    <td><?php echo $fetch2['Bank'];?></td>
-    <td><?php echo $fetch2[1];?></td>
-    <td><?php echo $fetch2[2];?></td>
-	<td><?php echo $fetch2[3];;?></td>
-    <td><?php echo $fetch2[4];?></td>
-    <td><?php echo $fetch2[5];?></td>
-	<td><?php echo $fetch2[6];?></td>
-	<td><?php echo $fetch2[11];?></td>
-    <td><?php echo $fetch2[7];?></td>
-    <td><?php echo $fetch2[8];?></td>
+    <td><?php echo $fetch['Customer'];?></td>
+    <td><?php echo $fetch['Bank'];?></td>
+    <td><?php echo $fetch['atmid'];?></td>
+    <td><?php echo $fetch['ATMShortName'];?></td>
+	<td><?php echo $fetch['City'];?></td>
+    <td><?php echo $fetch['state'];?></td>
+    <td><?php echo $fetch['panel_make'];?></td>
+	<td><?php echo $fetch['OLDPanelid'];?></td>
+	<td><?php echo $fetch['NewPanelID'];?></td>
+    <td><?php echo $fetch['dvrip'];?></td>
+    <td><?php echo $fetch['dvrname'];?></td>
 	<?php if($fet2[0]!=""){ ?>
     <td><?php echo $fet2[0];?></td>
 	<?php }else{?>
@@ -399,46 +329,7 @@ elseif($comm=="0"){
 	 ?><div align="center">total records:<?php echo $absf;?></div>  <?php
 }
 		
-    /*
-     $sp="select distinct(ip) from wsites where rtime NOT between '".$pre_date. " 00:00:00" ."' and '".$currtime. " 23:59:59" ."'";
-  // echo $sp;
-    $rst=mysqli_query($conn,$sp);
-    $Num_Rows=mysqli_num_rows($rst);?>
-    <div align="center">total records:<?php echo $Num_Rows?></div>
-    <?php
-     while($fetch=mysqli_fetch_array($rst)){
-        
-       $s= substr($fetch[0], 1);  
-		 	
-        $ab="select Customer,atmid,ATMShortName,state,panel_make,OLDPanelid,dvrip,dvrname,username,password from sites where live='Y'  and dvrip='".$s."'";
-        //echo $ab;
-        $runab=mysqli_query($conn,$ab);
-        $fetch2=mysqli_fetch_array($runab);
-		
-		$sq="select max(rtime) from wsites where ip='".$fetch[0]."'";
-		$runsq=mysqli_query($conn,$sq);
-		$fetch3=mysqli_fetch_array($runsq);
-		
-		
-     ?>
-     <tr style="background-color:#cfe8c7">
-    <td><?php echo $sr;?></td>
-    <td><?php echo $fetch2["Customer"];?></td>
-    <td><?php echo $fetch2["atmid"];?></td>
-    <td><?php echo $fetch2["ATMShortName"];?></td>
-    <td><?php echo $fetch2["state"];?></td>
-    <td><?php echo $fetch2["panel_make"];?></td>
-	 <td><?php echo $fetch2["OLDPanelid"];?></td>
-    <td><?php echo $fetch2["dvrip"];?></td>
-    <td><?php echo $fetch2["dvrname"];?></td>
-    <td><?php echo $fetch3[0];?></td>
-   
-    </tr>
-<?php  
-$sr++;
-}
-}
-*/
+    
 elseif($comm=="3"){
    $sp="select oldpanelid,newpanelid from sites where live='Y'  and DVRName in('CPPLUS','Hikvision','CPPLUS_INDIGO')";;
 	$rst=mysqli_query($conn,$sp);
@@ -499,46 +390,6 @@ elseif($comm=="3"){
    
    
     
-    /*
-     $sp="select distinct(ip) from wsites where rtime NOT between '".$pre_date2. " 00:00:00" ."' and '".$currtime. " 23:59:59" ."'";
-    //echo $sp;
-    $rst=mysqli_query($conn,$sp);
-    $Num_Rows=mysqli_num_rows($rst);?>
-    <div align="center">total records:<?php echo $Num_Rows?></div>
-    <?php
-     while($fetch=mysqli_fetch_array($rst)){
-        
-       $s= substr($fetch[0], 1);  
-		 	
-        $ab="select Customer,atmid,ATMShortName,state,panel_make,OLDPanelid,dvrip,dvrname,username,password from sites where live='Y'  and dvrip='".$s."'";
-        //echo $ab;
-        $runab=mysqli_query($conn,$ab);
-        $fetch2=mysqli_fetch_array($runab);
-		
-		$sq="select max(rtime) from wsites where ip='".$fetch[0]."'";
-		$runsq=mysqli_query($conn,$sq);
-		$fetch3=mysqli_fetch_array($runsq);
-		
-		
-     ?>
-     <tr style="background-color:#cfe8c7">
-    <td><?php echo $sr;?></td>
-    <td><?php echo $fetch2["Customer"];?></td>
-    <td><?php echo $fetch2["atmid"];?></td>
-    <td><?php echo $fetch2["ATMShortName"];?></td>
-    <td><?php echo $fetch2["state"];?></td>
-    <td><?php echo $fetch2["panel_make"];?></td>
-	 <td><?php echo $fetch2["OLDPanelid"];?></td>
-    <td><?php echo $fetch2["dvrip"];?></td>
-    <td><?php echo $fetch2["dvrname"];?></td>
-    <td><?php echo $fetch3[0];?></td>
-   
-    </tr>
-<?php 
-$sr++;
-}
-}
-*/
 elseif($comm=="4"){
     $sp="select oldpanelid,newpanelid from sites where live='Y'";;
 	$rst=mysqli_query($conn,$sp);
@@ -597,46 +448,7 @@ elseif($comm=="4"){
 	 ?><div align="center">total records:<?php echo $absf;?></div>  <?php
 }
     
-    /*
-     $sp="select distinct(ip) from wsites where rtime  not between '".$pre_date7. " 00:00:00" ."' and '".$currtime. " 23:59:59" ."'";
-    //echo $sp;
-    $rst=mysqli_query($conn,$sp);
-    $Num_Rows=mysqli_num_rows($rst);?>
-    <div align="center">total records:<?php echo $Num_Rows?></div>
-    <?php
-     while($fetch=mysqli_fetch_array($rst)){
-        
-        $s= substr($fetch[0], 1);  
-		 	
-        $ab="select Customer,atmid,ATMShortName,state,panel_make,OLDPanelid,dvrip,dvrname,username,password from sites where live='Y'  and dvrip='".$s."'";
-        //echo $ab;
-        $runab=mysqli_query($conn,$ab);
-        $fetch2=mysqli_fetch_array($runab);
-		
-		$sq="select max(rtime) from wsites where ip='".$fetch[0]."'";
-		$runsq=mysqli_query($conn,$sq);
-		$fetch3=mysqli_fetch_array($runsq);
-		
-		
-     ?>
-     <tr style="background-color:#cfe8c7">
-    <td><?php echo $sr;?></td>
-    <td><?php echo $fetch2["Customer"];?></td>
-    <td><?php echo $fetch2["atmid"];?></td>
-    <td><?php echo $fetch2["ATMShortName"];?></td>
-    <td><?php echo $fetch2["state"];?></td>
-    <td><?php echo $fetch2["panel_make"];?></td>
-	 <td><?php echo $fetch2["OLDPanelid"];?></td>
-    <td><?php echo $fetch2["dvrip"];?></td>
-    <td><?php echo $fetch2["dvrname"];?></td>
-    <td><?php echo $fetch3[0];?></td>
-   
-    </tr>
-<?php  
-$sr++;
-}
-}
-*/
+  
 elseif($comm=="5"){
     $sp="select oldpanelid,newpanelid from sites where live='Y'";;
 	$rst=mysqli_query($conn,$sp);
@@ -694,80 +506,14 @@ elseif($comm=="5"){
 	 $absf=$abs -1;
 	 ?><div align="center">total records:<?php echo $absf;?></div>  <?php
 }
-    
-    /*
-     $sp="select distinct(ip) from wsites where rtime not between '".$pre_date15. " 00:00:00" ."' and '".$currtime. " 23:59:59" ."'";
-    //echo $sp;
-    $rst=mysqli_query($conn,$sp);
-    $Num_Rows=mysqli_num_rows($rst);?>
-    <div align="center">total records:<?php echo $Num_Rows?></div>
-    <?php
-     while($fetch=mysqli_fetch_array($rst)){
-        
-        $s= substr($fetch[0], 1);  
-		 	
-        $ab="select Customer,atmid,ATMShortName,state,panel_make,OLDPanelid,dvrip,dvrname,username,password from sites where live='Y'  and dvrip='".$s."'";
-        //echo $ab;
-        $runab=mysqli_query($conn,$ab);
-        $fetch2=mysqli_fetch_array($runab);
-		
-		$sq="select max(rtime) from wsites where ip='".$fetch[0]."'";
-		$runsq=mysqli_query($conn,$sq);
-		$fetch3=mysqli_fetch_array($runsq);
-		
-		
-     ?>
-     <tr style="background-color:#cfe8c7">
-    <td><?php echo $sr;?></td>
-    <td><?php echo $fetch2["Customer"];?></td>
-    <td><?php echo $fetch2["atmid"];?></td>
-    <td><?php echo $fetch2["ATMShortName"];?></td>
-    <td><?php echo $fetch2["state"];?></td>
-    <td><?php echo $fetch2["panel_make"];?></td>
-	 <td><?php echo $fetch2["OLDPanelid"];?></td>
-    <td><?php echo $fetch2["dvrip"];?></td>
-    <td><?php echo $fetch2["dvrname"];?></td>
-    <td><?php echo $fetch3[0];?></td>
    
-    </tr>
-<?php   
-$sr++;
-}
-}
-*/
-?>
-<?php
-/*
-$date2=date_create("2018-07-10 18:20:20");
-$cat=implode(" ",$id);
-$date2=date_create($cat);
-$date1=date_create($currtime);
-
-$diff=date_diff($date2,$date1);
-echo $diff->format("%R%a");
-$cat1=explode(" ",$cat);
-
-*/
  ?>
 
 </table>
 
  </form>
 
- <?php 
- /*
-if($Prev_Page) 
-{
-	echo " <center><a href=\"JavaScript:a('$Prev_Page','perpg')\"> << Back></center></a> ";
-}
-
-if($Page!=$Num_Pages)
-{
-	echo " <center><a href=\"JavaScript:a('$Next_Page','perpg')\">Next >></center></a> ";
-}
-*/
-?>
-
+ 
 	</div >
 
 </body>
@@ -778,11 +524,3 @@ if($Page!=$Num_Pages)
  header("location: index.php");
 }
 ?>
-
-
-
-
-
-
-
-

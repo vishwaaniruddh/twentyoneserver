@@ -1,241 +1,69 @@
-<?php date_default_timezone_set("Asia/Calcutta");   //India time (GMT+5:30)
-?>
+<?php date_default_timezone_set("Asia/Calcutta"); ?>
 <!DOCTYPE html>
 <html>
 
 <head>
-    <style>
-        #dashboardTable {
-            width: 80%;
-            border-collapse: collapse;
-            height:60%;
-
-        }
-
-        table,
-        th,
-        td {
-            border: 1px solid #ccc;
-        }
-
-        th,
-        td {
-            padding: 11px;
-            text-align: center;
-        }
-
-        .tableHeader {
-            background-color: #DFFFD8;
-            color: teal;
-            font-size: 20px;
-        }
-
-        table#dashboardTable {
-            position: fixed;
-            top: 20%;
-            /* left: 2%;
-            right:3%; */
-        }
-
-        #dashboardTable td:first-child {
-            font-weight: bold;
-            color: darkslateblue;
-            font-size: 19px;
-        }
-
-        #dashboardTable td:nth-child(2) {
-
-            font-style: italic;
-            font-size: 22px;
-            color: orangered;
-            text-align: center;
-            font-weight: 700;
-
-        }
-
-        #dashboardTable td:nth-child(3) {
-
-            font-size: 19px;
-            color: black;
-            text-align: center;
-            font-weight: 700;
-            cursor: pointer;
-            transition: font-size 0.3s ease;
-        }
-
-        #dashboardTable td:nth-child(3):hover {
-            font-size: 25px;
-            /* Adjust the font size to your preference */
-            color: darkgoldenrod;
-            text-align: center;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        #dashboardTable td:nth-child(4) {
-
-            font-size: 19px;
-            color: black;
-            text-align: center;
-            font-weight: 700;
-            cursor: pointer;
-            transition: font-size 0.3s ease;
-        }
-
-        #dashboardTable td:nth-child(4):hover {
-            font-size: 25px;
-            /* Adjust the font size to your preference */
-            color: olive;
-            text-align: center;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        #dashboardTable td:nth-child(5) {
-
-            font-size: 19px;
-            color: black;
-            text-align: center;
-            font-weight: 700;
-            cursor: pointer;
-            transition: font-size 0.3s ease;
-        }
-
-        #dashboardTable td:nth-child(5):hover {
-            font-size: 25px;
-            /* Adjust the font size to your preference */
-            color: darkred;
-            text-align: center;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        #dashboardTable td:nth-child(6) {
-
-            font-size: 22px;
-            color: orangered;
-            text-align: center;
-            font-weight: 700;
-            cursor: pointer;
-            transition: font-size 0.3s ease;
-        }
-
-        #dashboardTable td:nth-child(6):hover {
-            font-size: 25px;
-            /* Adjust the font size to your preference */
-            color: black;
-            text-align: center;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        #dashboardTable td:nth-child(7) {
-
-            font-size: 19px;
-            color: black;
-            text-align: center;
-            font-weight: 700;
-            cursor: pointer;
-            transition: font-size 0.3s ease;
-        }
-
-        #dashboardTable td:nth-child(7):hover {
-            font-size: 25px;
-            /* Adjust the font size to your preference */
-            color: olive;
-            text-align: center;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        #dashboardTable td:nth-child(8) {
-
-            font-size: 19px;
-            color: black;
-            text-align: center;
-            font-weight: 700;
-            cursor: pointer;
-            transition: font-size 0.3s ease;
-        }
-
-        #dashboardTable td:nth-child(8):hover {
-            font-size: 25px;
-            /* Adjust the font size to your preference */
-            color: darkred;
-            text-align: center;
-            font-weight: 700;
-            cursor: pointer;
-        }
-
-        #dashboardTable tbody tr:hover {
-            background-color: #e0e0e0;
-            /* Light grey color for the entire row */
-        }
-
-        body {
-            background-color: darkslateblue;
-        }
-
-        #tableContent {
-            background: white;
-        }
-
-        #loading {
-            text-align: center;
-            margin-top: 25%;
-        }
-
-        #heading {
-            background-color: darkcyan;
-            width: 100%;
-            height: 70vh;
-            position: fixed;
-            border-bottom-left-radius: 50%;
-            border-bottom-right-radius: 50%;
-        }
-
-        #align {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding-top: 1rem;
-        }
-
-        #main {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 39px;
-            font-weight: bold;
-            padding-top: 3rem;
-            color: white
-        }
-
-        #span {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 19px;
-            font-weight: bold;
-            color:orange
-        }
-
-        @media (min-width: 992px) {
-
-            .modal-lg,
-            .modal-xl {
-                max-width: 1200px !important;
-            }
-        }
-    </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Alert Count Distribution</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            background-color: #f4f4f9;
+            font-family: Arial, sans-serif;
+        }
 
+        .header {
+            background-color: #343a40;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 5px solid #007bff;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        .table-container {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .table-header,.table-footer {
+            background-color: #007bff !important;
+            color: white;
+            font-size: 16px;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .modal-content {
+            border-radius: 8px;
+        }
+
+        .loading {
+            text-align: center;
+            margin-top: 20%;
+        }
+        .table-footer {
+    background-color: #007bff; /* Same background color as header */
+    color: white; /* Same text color as header */
+    font-size: 16px; /* Same font size as header */
+    font-weight: bold; /* Make the text bold to match header */
+}
+
+    </style>
 </head>
 
 <body>
+
     <?php
     $currentTime = date("H:i"); // Get the current time in the "H:i" format (24-hour clock)
 
@@ -255,50 +83,47 @@
 
 
     ?>
+    <div class="header">
+        <h1>21 Server Alert Count Distribution</h1>
+    </div>
 
-    <div id="heading">
-        <p id="main">  21 Server Alert Count Distribution </p>
-        <div id="loading">
-            <img src="assets/loader.gif" alt="loader" />
+    <div class="container">
+        <div id="loading" class="loading">
+            <img src="assets/loader.gif" alt="Loading..." />
         </div>
 
-        <div id="align">
-            <table table-striped id="dashboardTable" style=" text-align: center;">
-                <tr class="tableHeader">
-                    <th>Terminal</th>
-                    <th>User</th>
-                    <th>Open</th>
-                    <th>Close</th>
-                    <th>Total</th>
-                    <th>Critical Open</th>
-                    <th>Critical Close</th>
-                    <th>Total Critical</th>
-                </tr>
+        <div class="table-container">
+            <table id="dashboardTable" class="table table-striped table-hover">
+                <thead class="table-header">
+                    <tr>
+                        <th>Terminal</th>
+                        <th>User</th>
+                        <th>Open</th>
+                        <th>Close</th>
+                        <th>Total</th>
+                        <th>Critical Open</th>
+                        <th>Critical Close</th>
+                        <th>Total Critical</th>
+                    </tr>
+                </thead>
                 <tbody id="tableContent">
+                    <!-- Data will be populated here -->
                 </tbody>
             </table>
         </div>
     </div>
 
-
-
-
-
-
+    <!-- Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-xl" role="document">
             <div class="modal-content">
-                <!-- Modal content goes here -->
+                <!-- Modal content will be loaded here via AJAX -->
             </div>
         </div>
     </div>
-
-
-
     <script>
-        function openModalWithData(terminal, status) {
-            // Build the modal content with loading message
-            const modalContent = `
+    function openModalWithData(terminal, status) {
+        const modalContent = `
             <div class="modal-header">
                 <h5 class="modal-title">${status} Details for Terminal ${terminal}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -309,116 +134,133 @@
                 <p>Loading data...</p>
             </div>
         `;
+        $("#myModal .modal-content").html(modalContent);
+        $("#myModal").modal("show");
 
-            // Update the modal content with loading message
-            $("#myModal .modal-content").html(modalContent);
-
-            // Open the Bootstrap modal
-            $("#myModal").modal("show");
-
-            // Make an AJAX call to fetch data
-            $.ajax({
-                url: 'getSingleDashboardData.php', // Replace with your data endpoint URL
-                type: 'GET',
-                data: {
-                    terminal: terminal,
-                    status: status,
-                    shift: shift
-                },
-                success: function(data) {
-                    // Update the modal content with the fetched data
-                    console.log(data)
-                    $("#myModal .modal-content .modal-body").html(data);
-                },
-                error: function() {
-                    // Handle AJAX error
-                    $("#myModal .modal-content .modal-body").html("Failed to load data.");
-                }
-            });
-        }
-
-        // Add a click event handler for the table cells with data attributes
-        $(document).on("click", "td[data-terminal][data-status]", function() {
-            const terminal = $(this).data("terminal");
-            const status = $(this).data("status");
-
-            // Open the modal with loading message and make an AJAX call
-            openModalWithData(terminal, status);
-        });
-
-
-        // Hide the loading container when data is loaded
-        function hideLoading() {
-            $("#loading").hide();
-        }
-
-        // Show the loading container while fetching data
-        function showLoading() {
-            $("#loading").show();
-        }
-
-        // Initial loading
-        showLoading();
-
-        const shift = '<?php echo $shift; ?>';
-
-        function fetchData(shift) {
-            $.ajax({
-                url: 'getDashboardData.php', // Replace with your PHP script URL
-                method: 'GET',
-                dataType: 'json',
-                data: 'shift=' + shift,
-                success: function(data) {
-                    console.log(data)
-                    hideLoading(); // Hide the loading container when data is loaded
-                    populateTable(data);
-                },
-                error: function() {
-                    console.log('Error fetching data.');
-                }
-            });
-        }
-
-        function populateTable(data) {
-            const tableContent = document.getElementById('tableContent');
-            tableContent.innerHTML = '';
-
-            for (const dataRow of data.data) {
-                console.log(dataRow)
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${dataRow.terminal}</td>
-                    <td style="text-align:left">${dataRow.username}</td>
-                    <td data-terminal="${dataRow.terminal}" data-status="open">${dataRow.open}</td>
-                    <td data-terminal="${dataRow.terminal}" data-status="close">${dataRow.close}</td>
-                    <td data-terminal="${dataRow.terminal}" data-status="total">${dataRow.total}</td>
-                    <td data-terminal="${dataRow.terminal}" data-status="criticalopen">${dataRow.criticalopen}</td>
-                    <td data-terminal="${dataRow.terminal}" data-status="criticalClose">${dataRow.criticalClose}</td>
-                    <td data-terminal="${dataRow.terminal}" data-status="totalCritical">${dataRow.totalCritical}</td>
-                `;
-                tableContent.appendChild(row);
+        $.ajax({
+            url: 'getSingleDashboardData.php',
+            type: 'GET',
+            data: {
+                terminal: terminal,
+                status: status,
+                shift: shift
+            },
+            success: function(data) {
+                $("#myModal .modal-content .modal-body").html(data);
+            },
+            error: function() {
+                $("#myModal .modal-content .modal-body").html("Failed to load data.");
             }
-            const totalrow = document.createElement('tr');
-            totalrow.setAttribute('class', 'tableHeader');
+        });
+    }
 
-            totalrow.innerHTML = `
-                    <td></td>
-                    <td></td>
-                    <td>${data.grandtotalOpenAlerts}</td>
-                    <td>${data.grandtotalCloseAlerts}</td>
-                    <td>${data.grandtotalAlerts}</td>
-                    <td>${data.grandtoalCriticalOpen}</td>
-                    <td>${data.grandtotalCloseCriticalAlert}</td>
-                    <td>${data.grandtotalCritical}</td>
-                `;
-            tableContent.appendChild(totalrow);
+    $(document).on("click", "td[data-terminal][data-status]", function() {
+        const terminal = $(this).data("terminal");
+        const status = $(this).data("status");
+        openModalWithData(terminal, status);
+    });
+
+    function hideLoading() {
+        $("#loading").hide();
+    }
+
+    function showLoading() {
+        $("#loading").show();
+    }
+
+    function fetchData(shift) {
+        $.ajax({
+            url: 'getDashboardData.php',
+            method: 'GET',
+            dataType: 'json',
+            data: { shift: shift },
+            success: function(data) {
+                hideLoading();
+                updateTable(data);
+            },
+            error: function() {
+                console.log('Error fetching data.');
+            }
+        });
+    }
+    function updateTable(data) {
+    const tableContent = document.getElementById('tableContent');
+    const existingRows = {};
+    tableContent.querySelectorAll('tr').forEach(row => {
+        const terminal = row.querySelector('td').textContent;
+        if (terminal) {
+            existingRows[terminal] = row;
         }
-        setInterval(function() {
-            showLoading(); // Show loading while fetching data
-            fetchData(shift);
-        }, 5000);
+    });
+
+    data.data.forEach(dataRow => {
+        const terminal = dataRow.terminal;
+        let row = existingRows[terminal];
+
+        if (!row) {
+            // Create new row if it doesn't exist
+            row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${dataRow.terminal}</td>
+                <td>${dataRow.username}</td>
+                <td data-terminal="${dataRow.terminal}" data-status="open">${dataRow.open}</td>
+                <td data-terminal="${dataRow.terminal}" data-status="close">${dataRow.close}</td>
+                <td data-terminal="${dataRow.terminal}" data-status="total">${dataRow.total}</td>
+                <td data-terminal="${dataRow.terminal}" data-status="criticalopen">${dataRow.criticalopen}</td>
+                <td data-terminal="${dataRow.terminal}" data-status="criticalClose">${dataRow.criticalClose}</td>
+                <td data-terminal="${dataRow.terminal}" data-status="totalCritical">${dataRow.totalCritical}</td>
+            `;
+            tableContent.appendChild(row);
+            existingRows[terminal] = row;
+        } else {
+            // Update existing row
+            row.querySelector(`td[data-status="open"]`).textContent = dataRow.open;
+            row.querySelector(`td[data-status="close"]`).textContent = dataRow.close;
+            row.querySelector(`td[data-status="total"]`).textContent = dataRow.total;
+            row.querySelector(`td[data-status="criticalopen"]`).textContent = dataRow.criticalopen;
+            row.querySelector(`td[data-status="criticalClose"]`).textContent = dataRow.criticalClose;
+            row.querySelector(`td[data-status="totalCritical"]`).textContent = dataRow.totalCritical;
+        }
+    });
+
+    // Update totals
+    const totalRow = tableContent.querySelector('.table-footer');
+    if (totalRow) {
+        totalRow.innerHTML = `
+            <td></td>
+            <td></td>
+            <td>${data.grandtotalOpenAlerts}</td>
+            <td>${data.grandtotalCloseAlerts}</td>
+            <td>${data.grandtotalAlerts}</td>
+            <td>${data.grandtoalCriticalOpen}</td>
+            <td>${data.grandtotalCloseCriticalAlert}</td>
+            <td>${data.grandtotalCritical}</td>
+        `;
+    } else {
+        const newTotalRow = document.createElement('tr');
+        newTotalRow.setAttribute('class', 'table-footer');
+        newTotalRow.innerHTML = `
+            <td></td>
+            <td></td>
+            <td>${data.grandtotalOpenAlerts}</td>
+            <td>${data.grandtotalCloseAlerts}</td>
+            <td>${data.grandtotalAlerts}</td>
+            <td>${data.grandtoalCriticalOpen}</td>
+            <td>${data.grandtotalCloseCriticalAlert}</td>
+            <td>${data.grandtotalCritical}</td>
+        `;
+        tableContent.appendChild(newTotalRow);
+    }
+}
+
+
+    const shift = '<?php echo $shift; ?>';
+    setInterval(function() {
+        // showLoading();
         fetchData(shift);
-    </script>
+    }, 5000);
+</script>
+
 </body>
 
 </html>

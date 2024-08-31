@@ -59,7 +59,7 @@ class AutoFilter
      *
      * @param Worksheet $pSheet
      *
-     * @return AutoFilter
+     * @return $this
      */
     public function setParent(Worksheet $pSheet = null)
     {
@@ -85,13 +85,21 @@ class AutoFilter
      *
      * @throws PhpSpreadsheetException
      *
-     * @return AutoFilter
+     * @return $this
      */
     public function setRange($pRange)
     {
         // extract coordinate
-        list($worksheet, $pRange) = Worksheet::extractSheetTitle($pRange, true);
+        $result = Worksheet::extractSheetTitle($pRange, true);
 
+        if (is_array($result) && count($result) >= 2) {
+            $worksheet = $result[0];
+            $pRange = $result[1];
+        } else {
+            $worksheet = null; // or a default value if appropriate
+            $pRange = null;    // or a default value if appropriate
+        }
+        
         if (strpos($pRange, ':') !== false) {
             $this->range = $pRange;
         } elseif (empty($pRange)) {
@@ -104,8 +112,16 @@ class AutoFilter
             //    Discard all column rules
             $this->columns = [];
         } else {
-            //    Discard any column rules that are no longer valid within this range
-            list($rangeStart, $rangeEnd) = Coordinate::rangeBoundaries($this->range);
+            $result = Coordinate::rangeBoundaries($this->range);
+
+if (is_array($result) && count($result) >= 2) {
+    $rangeStart = $result[0];
+    $rangeEnd = $result[1];
+} else {
+    $rangeStart = null; // or a default value if appropriate
+    $rangeEnd = null;   // or a default value if appropriate
+}
+
             foreach ($this->columns as $key => $value) {
                 $colIndex = Coordinate::columnIndexFromString($key);
                 if (($rangeStart[0] > $colIndex) || ($rangeEnd[0] < $colIndex)) {
@@ -143,7 +159,17 @@ class AutoFilter
         }
 
         $columnIndex = Coordinate::columnIndexFromString($column);
-        list($rangeStart, $rangeEnd) = Coordinate::rangeBoundaries($this->range);
+        $result = Coordinate::rangeBoundaries($this->range);
+
+        if (is_array($result) && count($result) >= 2) {
+            $rangeStart = $result[0];
+            $rangeEnd = $result[1];
+        } else {
+            $rangeStart = null; // or an appropriate default value
+            $rangeEnd = null;   // or an appropriate default value
+        }
+
+        
         if (($rangeStart[0] > $columnIndex) || ($rangeEnd[0] < $columnIndex)) {
             throw new PhpSpreadsheetException('Column is outside of current autofilter range.');
         }
@@ -196,7 +222,16 @@ class AutoFilter
      */
     public function getColumnByOffset($pColumnOffset)
     {
-        list($rangeStart, $rangeEnd) = Coordinate::rangeBoundaries($this->range);
+        $result = Coordinate::rangeBoundaries($this->range);
+
+        if (is_array($result) && count($result) >= 2) {
+            $rangeStart = $result[0];
+            $rangeEnd = $result[1];
+        } else {
+            $rangeStart = null; // or a default value if appropriate
+            $rangeEnd = null;   // or a default value if appropriate
+        }
+        
         $pColumn = Coordinate::stringFromColumnIndex($rangeStart[0] + $pColumnOffset);
 
         return $this->getColumn($pColumn);
@@ -210,7 +245,7 @@ class AutoFilter
      *
      * @throws PhpSpreadsheetException
      *
-     * @return AutoFilter
+     * @return $this
      */
     public function setColumn($pColumn)
     {
@@ -241,7 +276,7 @@ class AutoFilter
      *
      * @throws PhpSpreadsheetException
      *
-     * @return AutoFilter
+     * @return $this
      */
     public function clearColumn($pColumn)
     {
@@ -264,7 +299,7 @@ class AutoFilter
      * @param string $fromColumn Column name (e.g. A)
      * @param string $toColumn Column name (e.g. B)
      *
-     * @return AutoFilter
+     * @return $this
      */
     public function shiftColumn($fromColumn, $toColumn)
     {
@@ -358,9 +393,9 @@ class AutoFilter
         $dataSet = $ruleSet['filterRules'];
         $join = $ruleSet['join'];
         $customRuleForBlanks = isset($ruleSet['customRuleForBlanks']) ? $ruleSet['customRuleForBlanks'] : false;
-
+    
         if (!$customRuleForBlanks) {
-            //    Blank cells are always ignored, so return a FALSE
+            // Blank cells are always ignored, so return a FALSE
             if (($cellValue == '') || ($cellValue === null)) {
                 return false;
             }
@@ -368,74 +403,64 @@ class AutoFilter
         $returnVal = ($join == AutoFilter\Column::AUTOFILTER_COLUMN_JOIN_AND);
         foreach ($dataSet as $rule) {
             $retVal = false;
-
+    
             if (is_numeric($rule['value'])) {
-                //    Numeric values are tested using the appropriate operator
+                // Numeric values are tested using the appropriate operator
                 switch ($rule['operator']) {
                     case AutoFilter\Column\Rule::AUTOFILTER_COLUMN_RULE_EQUAL:
                         $retVal = ($cellValue == $rule['value']);
-
                         break;
                     case AutoFilter\Column\Rule::AUTOFILTER_COLUMN_RULE_NOTEQUAL:
                         $retVal = ($cellValue != $rule['value']);
-
                         break;
                     case AutoFilter\Column\Rule::AUTOFILTER_COLUMN_RULE_GREATERTHAN:
                         $retVal = ($cellValue > $rule['value']);
-
                         break;
                     case AutoFilter\Column\Rule::AUTOFILTER_COLUMN_RULE_GREATERTHANOREQUAL:
                         $retVal = ($cellValue >= $rule['value']);
-
                         break;
                     case AutoFilter\Column\Rule::AUTOFILTER_COLUMN_RULE_LESSTHAN:
                         $retVal = ($cellValue < $rule['value']);
-
                         break;
                     case AutoFilter\Column\Rule::AUTOFILTER_COLUMN_RULE_LESSTHANOREQUAL:
                         $retVal = ($cellValue <= $rule['value']);
-
                         break;
                 }
             } elseif ($rule['value'] == '') {
                 switch ($rule['operator']) {
                     case AutoFilter\Column\Rule::AUTOFILTER_COLUMN_RULE_EQUAL:
                         $retVal = (($cellValue == '') || ($cellValue === null));
-
                         break;
                     case AutoFilter\Column\Rule::AUTOFILTER_COLUMN_RULE_NOTEQUAL:
                         $retVal = (($cellValue != '') && ($cellValue !== null));
-
                         break;
                     default:
                         $retVal = true;
-
                         break;
                 }
             } else {
-                //    String values are always tested for equality, factoring in for wildcards (hence a regexp test)
-                $retVal = preg_match('/^' . $rule['value'] . '$/i', $cellValue);
+                // String values are always tested for equality, factoring in for wildcards (hence a regexp test)
+                $retVal = preg_match('/^' . preg_quote($rule['value'], '/') . '$/i', $cellValue);
             }
-            //    If there are multiple conditions, then we need to test both using the appropriate join operator
+            // If there are multiple conditions, then we need to test both using the appropriate join operator
             switch ($join) {
                 case AutoFilter\Column::AUTOFILTER_COLUMN_JOIN_OR:
                     $returnVal = $returnVal || $retVal;
-                    //    Break as soon as we have a TRUE match for OR joins,
-                    //        to avoid unnecessary additional code execution
+                    // Break as soon as we have a TRUE match for OR joins,
+                    // to avoid unnecessary additional code execution
                     if ($returnVal) {
                         return $returnVal;
                     }
-
                     break;
                 case AutoFilter\Column::AUTOFILTER_COLUMN_JOIN_AND:
                     $returnVal = $returnVal && $retVal;
-
                     break;
             }
         }
-
+    
         return $returnVal;
     }
+    
 
     /**
      * Test if cell date value is matches a set of values defined by a set of months.
@@ -617,11 +642,12 @@ class AutoFilter
      *
      * @throws PhpSpreadsheetException
      *
-     * @return AutoFilter
+     * @return $this
      */
     public function showHideRows()
     {
         list($rangeStart, $rangeEnd) = Coordinate::rangeBoundaries($this->range);
+
 
         //    The heading row should always be visible
         $this->workSheet->getRowDimension($rangeStart[1])->setVisible(true);

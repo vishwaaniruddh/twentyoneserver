@@ -84,6 +84,16 @@ var tableToExcel = (function() {
             <div>
 			<center><h1 style="margin-top:70px; color:#fff;"  ><b> View Alert</b></h1></center>
 			
+<hr>
+<a type="button" href="./alertview_new.php#tabletop" rel="noopener noreferrer" style="
+    border: 1px solid gray;
+    padding: 10px;
+    background: #f0f0f0;
+    color: black;
+    border-radius: 3px;
+    margin: 10px;
+">View version 2</a>
+
       <table border="1" style="margin-top:40px; width:90%; " align="center" >          
      
      

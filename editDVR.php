@@ -692,6 +692,11 @@ include 'menu.php'; ?>
 </div>
  
 
+
+
+
+
+
 <div class="row div1">
    
      <div  class="col-md-2"></div>
@@ -708,12 +713,23 @@ include 'menu.php'; ?>
 </div>
 
 
+<?php 
+$userid = $_SESSION['id'];
+$live_access_sql  = mysqli_query($conn,"select * from LoginUsers where id='".$userid."'");
+$live_access_sqlResult = mysqli_fetch_assoc($live_access_sql) ;
+
+$dvr_access = $live_access_sqlResult['DVR'];
+
+if($dvr_access=='1'){
+    
+    ?>
+
 <div class="row div1">
     <div  class="col-md-2"></div>
     <div  class="col-md-4"><leble>Live</leble></div>
     <div  class="col-md-4">
 
-        <select name="live" id="live"  <?php if($_SESSION['id']=="24" || $_SESSION['id']=="93" || $_SESSION['id']=="46" || $_SESSION['id']=="27" || $_SESSION['id']=="90"  || $_SESSION['id']=="28" || $_SESSION['id']=="139" || $_SESSION['id']=="74" || $_SESSION['id']=="186" || $_SESSION['id']=="164" || $_SESSION['id']=="206" || $_SESSION['id']=="141" || $_SESSION['id']=="296" || $_SESSION['id']=="503" ){ echo " style='width: 180px;display:block' ";  }else{ echo " style='width: 180px;display:none' " ;  }?> />
+        <select name="live" id="live" />
             <option value="Y" <?php if($live_status=='Y'){ echo 'selected'; } ?>>Yes</option>
             <option value="N" <?php if($live_status=='N'){ echo 'selected'; } ?>>N</option>
             <option value="P" <?php if($live_status=='P'){ echo 'selected'; } ?>>Pending</option>
@@ -724,6 +740,8 @@ include 'menu.php'; ?>
     <div  class="col-md-3"></div>
     <div  class="col-md-2"></div>  
 </div>
+
+<?php } ?>
 
 
 <div class="row div1">

@@ -189,7 +189,9 @@ input[type=text] {
          <optgroup label=" ">
         <option value="1">Add Site</option>
         <option value="2">View Site</option>
-         </optgroup>
+        <option value="51">Edit Site</option>
+        
+    </optgroup>
           </optgroup>
           
           
@@ -198,7 +200,7 @@ input[type=text] {
                </optgroup>
                 <optgroup label="">
                 <option value="3">Add User</option>
-                <option value="4">View User</option>
+                <option value="22">View User</option>
                </optgroup>
                
                

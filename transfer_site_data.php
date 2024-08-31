@@ -1,37 +1,22 @@
 <?php
 include("config.php");
-include("db_connection.php");
-$newcn = OpenNewCon();
-/*
-$uname = $_POST['uname'];
-$password =$_POST['password'];
-$con = OpenCon();
- $sql = mysqli_query($con,"select * from loginusers where uname = '".$uname."' and pwd='".$password."'");
- $sql_result = mysqli_num_rows($sql);
+// include("db_connection.php");
+// $newcn = OpenNewCon();
 
-if($sql_result>0){
-    $get_sql_result = mysqli_fetch_assoc($sql);
-    $id = $get_sql_result['id'];
-    $name = $get_sql_result['name'];
-    $uname  = $get_sql_result['uname'];
-   
-    $data=['Code'=> 200,'userid'=>$id,'name'=>$name,'uname'=>$uname];
-    CloseCon($con);
-    echo json_encode($data);
-        
-}
-else{
-	CloseCon($con);
-	$data=['Code'=> 201];
-    echo json_encode($data);
-} 
-*/
 
-$sn = $_POST['sn'];
+$dbhost = "192.168.100.23";
+$dbuser = "esurv";
+$dbpass = "Esurv123*";
+$db = "esurv";
+$newcn = new mysqli($dbhost, $dbuser, $dbpass,$db) or die("Connect failed: %s\n". $conn -> error);
+
+
+$sn = $_REQUEST['sn'];
 
 $sql = mysqli_query($conn,"select * from sites where SN='".$sn."'");
 if(mysqli_num_rows($sql)>0){
 	$_result = mysqli_fetch_assoc($sql);
+
 	$Status = $_result['Status'];
 	$Phase = $_result['Phase'];
 	$Customer = $_result['Customer'];
@@ -72,34 +57,107 @@ if(mysqli_num_rows($sql)>0){
 	$PanelIP = $_result['PanelIP'];
 	$AlertType = $_result['AlertType'];
 	$live_date = $_result['live_date'];
-	if($live_date==''){
+	if($live_date=='' || $live_date==NULL){
 		$live_date = date('Y-m-d');
 	}
 	$CTS_LocalBranch = $_result['CTS_LocalBranch'];
 	$RouterIp = $_result['RouterIp'];
 	$last_modified = $_result['last_modified'];
 	$partial_live = $_result['partial_live'];
+	
+	//$_live_date = $_result['live_date'];
+	$_installation_date = $_result['installationDate'];
+	if($_installation_date=='' || $_installation_date==NULL){
+		$_installation_date = date('Y-m-d');
+	}
+	$_old_atmid = $_result['old_atmid'];
+	$_auto_alert = $_result['auto_alert'];
+	$_project = $_result['project'];
+	$_comfort_id = $_result['comfortID'];
+	$_panel_power_connection = $_result['panel_power_connection'];
 		
 	$transfersql = mysqli_query($newcn,"select * from sites where SN='".$sn."'");
 	if(mysqli_num_rows($transfersql)>0){
 
-//		values('".$Status."','".$Phase."','".$Customer."','".$Bank."','".$TrackerNo."','".$ATMID."','".$ATMID_2."','".$ATMID_3."','".$ATMID_4."','".$ATMShortName."','".$SiteAddress."','".$City."','".$State."','".$Zone."','".$Panel_Make."','".$OldPanelID."','".$NewPanelID."','".$DVRIP."','".$DVRName."','".$UserName."','".$Password."','".$live."','".$curentdt."','".$instdt.$t."','".$engname."','".$username."','".$remark."','".$DVR_Model_num."','".$Router_Model_num."','".$PanelsIP."','".$RouterIp."','1')";
-       
 
-       $updatesql= " UPDATE `sites` SET `Status`='".$Status."',`Phase`='".$Phase."',`Customer`='".$Customer."',`Bank`='".$Bank."',`ATMID`='".$ATMID."',`ATMID_2`='".$ATMID_2."',`ATMID_3`='".$ATMID_3."',`ATMID_4`='".$ATMID_4."',`TrackerNo`='".$TrackerNo."',`ATMShortName`='".$ATMShortName."',
-	                 `SiteAddress`='".$SiteAddress."',`City`='".$City."',`State`='".$State."',`Zone`='".$Zone."',`Panel_Make`='".$Panel_Make."',`OldPanelID`='".$OldPanelID."',`NewPanelID`='".$NewPanelID."',`DVRIP`='".$DVRIP."',`DVRName`='".$DVRName."',`DVR_Model_num`='".$DVR_Model_num."',`Router_Model_num`='".$Router_Model_num."',`UserName`='".$UserName."',`Password`='".$Password."',`live`='".$live."',`current_dt`='".$current_dt."',`mailreceive_dt`='".$mailreceive_dt."',`eng_name`='".$eng_name."',`addedby`='".$addedby."',`editby`='".$editby."',`site_remark`='".$site_remark."',`PanelIP`='".$PanelIP."',`AlertType`='".$AlertType."',`CTS_LocalBranch`='".$CTS_LocalBranch."',`RouterIp`='".$RouterIp."',`last_modified`='".$last_modified."',`partial_live`='".$partial_live."' where `SN`='".$sn."' ";
 
+
+		//		values('".$Status."','".$Phase."','".$Customer."','".$Bank."','".$TrackerNo."','".$ATMID."','".$ATMID_2."','".$ATMID_3."','".$ATMID_4."','".$ATMShortName."','".$SiteAddress."','".$City."','".$State."','".$Zone."','".$Panel_Make."','".$OldPanelID."','".$NewPanelID."','".$DVRIP."','".$DVRName."','".$UserName."','".$Password."','".$live."','".$curentdt."','".$instdt.$t."','".$engname."','".$username."','".$remark."','".$DVR_Model_num."','".$Router_Model_num."','".$PanelsIP."','".$RouterIp."','1')";
+		
+		
+		$updatesql= " UPDATE `sites` SET `Status`='".$Status."',`Phase`='".$Phase."',`Customer`='".$Customer."',`Bank`='".$Bank."',`ATMID`='".$ATMID."',`ATMID_2`='".$ATMID_2."',`ATMID_3`='".$ATMID_3."',`ATMID_4`='".$ATMID_4."',`TrackerNo`='".$TrackerNo."',`ATMShortName`='".$ATMShortName."',`SiteAddress`='".$SiteAddress."',`City`='".$City."',`State`='".$State."',`Zone`='".$Zone."',`Panel_Make`='".$Panel_Make."',`OldPanelID`='".$OldPanelID."',`NewPanelID`='".$NewPanelID."',`DVRIP`='".$DVRIP."',`DVRName`='".$DVRName."',`DVR_Model_num`='".$DVR_Model_num."',`Router_Model_num`='".$Router_Model_num."',`UserName`='".$UserName."',`Password`='".$Password."',`live`='".$live."',`current_dt`='".$current_dt."',`mailreceive_dt`='".$mailreceive_dt."',`eng_name`='".$eng_name."',`addedby`='".$addedby."',`editby`='".$editby."',`site_remark`='".$site_remark."',`PanelIP`='".$PanelIP."',`AlertType`='".$AlertType."',`CTS_LocalBranch`='".$CTS_LocalBranch."',`RouterIp`='".$RouterIp."',`last_modified`='".$last_modified."',`partial_live`='".$partial_live."',`live_date`='".$live_date."',`installationDate`='".$_installation_date."',`old_atmid`='".$_old_atmid."',`auto_alert`='".$_auto_alert."',`project`='".$_project."',`comfortID`='".$_comfort_id."',`panel_power_connection`='".$_panel_power_connection."' where `SN`='".$sn."' ";
+        
+		if($Bank=='PNB'){
+			$_transfer_site_circle_sql = mysqli_query($newcn,"select * from site_circle where sn='".$sn."'");
+			if(mysqli_num_rows($_transfer_site_circle_sql)>0){
+				$_transfer_site_circle_data = mysqli_fetch_assoc($_transfer_site_circle_sql);
+				
+				$_local_site_circle_sql = mysqli_query($conn,"select * from site_circle where sn='".$sn."'");
+				if(mysqli_num_rows($_local_site_circle_sql)>0){
+				    $_local_site_circle_data = mysqli_fetch_assoc($_local_site_circle_sql);
+					$_site_type = $_local_site_circle_data['site_type'];
+					$_zonal = $_local_site_circle_data['Zonal'];
+					$_circle = $_local_site_circle_data['Circle'];
+					//$_circleatmid = $_local_site_circle_data['ATMID'];
+					$update_site_circle_sql="update site_circle SET ATMID='".$ATMID."',site_type='".$_site_type."',Zonal='".$_zonal."',Circle='".$_circle."' where sn='".$sn."'";
+                    $updatesite_circle_result=mysqli_query($newcn,$update_site_circle_sql);
+				}
+				
+			}else{
+				$_local_site_circle_sql = mysqli_query($conn,"select * from site_circle where sn='".$sn."'");
+				if(mysqli_num_rows($_local_site_circle_sql)>0){
+				    $_local_site_circle_data = mysqli_fetch_assoc($_local_site_circle_sql);
+					$_site_type = $_local_site_circle_data['site_type'];
+					$_zonal = $_local_site_circle_data['Zonal'];
+					$_circle = $_local_site_circle_data['Circle'];
+					$insert_site_circle_sql="insert into site_circle(ATMID,site_type,Bank,Zonal,Circle,sn)
+                                             values('".$ATMID."','".$_site_type."','".$Bank."','".$_zonal."','".$_circle."','".$sn."')";
+                    $insertsite_circle_result=mysqli_query($newcn,$insert_site_circle_sql);
+				}
+			}
+		}
+		
 	                 
        $updateresult=mysqli_query($newcn,$updatesql);
 	   if($updateresult){
 	     $data=['Code'=> 202];
 	   }else{
-		  $data=['Code'=> 203]; 
+		  $data=['Code'=> 203,'qry'=>$updatesql]; 
 	   }
-	}else{
+	}
+	
+	else{
 		$insertsql="insert into sites(SN,Status,Phase,Customer,Bank,ATMID,ATMID_2,ATMID_3,ATMID_4,TrackerNo,ATMShortName,SiteAddress,City,State,Zone,Panel_Make,OldPanelID,NewPanelID,DVRIP,DVRName,DVR_Model_num,Router_Model_num,UserName,Password,live,current_dt,mailreceive_dt,eng_name,addedby,editby,site_remark,PanelIP,AlertType,live_date,CTS_LocalBranch,RouterIp,last_modified,partial_live)
         values('".$sn."','".$Status."','".$Phase."','".$Customer."','".$Bank."','".$ATMID."','".$ATMID_2."','".$ATMID_3."','".$ATMID_4."','".$TrackerNo."','".$ATMShortName."','".$SiteAddress."','".$City."','".$State."','".$Zone."','".$Panel_Make."','".$OldPanelID."','".$NewPanelID."','".$DVRIP."','".$DVRName."','".$DVR_Model_num."','".$Router_Model_num."','".$UserName."','".$Password."','".$live."','".$current_dt."','".$mailreceive_dt."','".$eng_name."','".$addedby."','".$editby."','".$site_remark."','".$PanelIP."','".$AlertType."','".$live_date."','".$CTS_LocalBranch."','".$RouterIp."','".$last_modified."','".$partial_live."')";
 $insertresult=mysqli_query($newcn,$insertsql);
+
+        
+		 if($Bank=='PNB'){
+			$_transfer_site_circle_sql = mysqli_query($newcn,"select * from site_circle where sn='".$sn."'");
+			if(mysqli_num_rows($_transfer_site_circle_sql)>0){
+				$_local_site_circle_sql = mysqli_query($conn,"select * from site_circle where sn='".$sn."'");
+				if(mysqli_num_rows($_local_site_circle_sql)>0){
+				    $_local_site_circle_data = mysqli_fetch_assoc($_local_site_circle_sql);
+					$_site_type = $_local_site_circle_data['site_type'];
+					$_zonal = $_local_site_circle_data['Zonal'];
+					$_circle = $_local_site_circle_data['Circle'];
+					$update_site_circle_sql="update site_circle SET ATMID='".$ATMID."',site_type='".$_site_type."',Zonal='".$_zonal."',Circle='".$_circle."' where sn='".$sn."'";
+                    $updatesite_circle_result=mysqli_query($newcn,$update_site_circle_sql);
+				}
+			}else{
+				$_local_site_circle_sql = mysqli_query($conn,"select * from site_circle where sn='".$sn."'");
+				if(mysqli_num_rows($_local_site_circle_sql)>0){
+				    $_local_site_circle_data = mysqli_fetch_assoc($_local_site_circle_sql);
+					$_site_type = $_local_site_circle_data['site_type'];
+					$_zonal = $_local_site_circle_data['Zonal'];
+					$_circle = $_local_site_circle_data['Circle'];
+					$insert_site_circle_sql="insert into site_circle(ATMID,site_type,Bank,Zonal,Circle,sn)
+                                             values('".$ATMID."','".$_site_type."','".$Bank."','".$_zonal."','".$_circle."','".$sn."')";
+                    $insertsite_circle_result=mysqli_query($newcn,$insert_site_circle_sql);
+				}
+			}
+		} 
+
         if($insertresult){
 		 $data=['Code'=> 200];
 		}else{
@@ -109,7 +167,7 @@ $insertresult=mysqli_query($newcn,$insertsql);
 }else{
   $data=['Code'=> 205];
 }
-CloseCon($newcn);
+
     echo json_encode($data);
 
 ?>

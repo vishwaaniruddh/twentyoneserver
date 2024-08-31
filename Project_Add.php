@@ -8,7 +8,7 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) { ?>
             function states() {
 
                 var project = document.getElementById("project").value;
-                if (project == "1") {
+                if (project == "1" || project == "10") {
                     var tag = "AddSite_";
                 } else if (project == "2") {
                     var tag = "AddDVR_";
@@ -44,7 +44,7 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) { ?>
             var boolPnl = "";
             function checkPanIP() {
                 var project = document.getElementById("project").value;
-                if (project == "1") {
+                if (project == "1" || project == "10") {
                     var tag = "AddSite_";
                 } else if (project == "2") {
                     var tag = "AddSite_";
@@ -78,18 +78,11 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) { ?>
                 }
 
             }
-
-
-
-
-
-
             var boolemail = "";
-
             function checkip() {
                 //alert("hello");
                 var project = document.getElementById("project").value;
-                if (project == "1") {
+                if (project == "1" || project == "10") {
                     var tag = "AddSite_";
                 } else if (project == "2") {
                     var tag = "AddSite_";
@@ -121,13 +114,10 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) { ?>
                     return false;
                 }
             }
-
-
             var bool = "";
-
             function checkpanel() {
                 var project = document.getElementById("project").value;
-                if (project == "1") {
+                if (project == "1" || project == "10") {
                     var tag = "AddSite_";
                 } else if (project == "2") {
                     var tag = "AddSite_";
@@ -158,9 +148,7 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) { ?>
                     return false;
                 }
             }
-
             var boolatm = "";
-
             function checkAtm() {
                 var project = document.getElementById("project").value;
                 if (project == "1") {
@@ -196,8 +184,6 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) { ?>
                     return false;
                 }
             }
-
-
             function validation() {
                 var a = confirm("are you sure want to submit ");
                 if (a == 1) {
@@ -207,14 +193,10 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) { ?>
                     alert("your form is not submited");
                 }
             }
-
             function val() {
-
                 var project = document.getElementById("project").value;
-                if (project == "1") {
+                if (project == "1" || project == "10") {
                     var tag = "AddSite_";
-
-
                     var Customer = document.getElementById(tag + "Customer").value;
                     var Bank = document.getElementById(tag + "Bank").value;
                     var ATMID = document.getElementById(tag + "ATMID").value;
@@ -368,7 +350,7 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) { ?>
             }
             function ChangeSitesForm() {
                 var project = document.getElementById("project").value;
-                if (project == "1") {
+                if (project == "1" || project == "10") {
                     $("#AddSite").show();
                     $("#AddDVR").hide();
                     $("#Cloud").hide();
@@ -397,10 +379,6 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) { ?>
                     $("#hd_DVR").hide();
                 }
             }
-
-
-
-
             function isNumberKey(evt) {
                 var charCode = (evt.which) ? evt.which : evt.keyCode;
                 if (charCode != 46 && charCode > 31 &&
@@ -507,11 +485,7 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) { ?>
         include 'config.php';
         include 'menu.php'; ?>
         <div class="container" style="padding:20px;margin-top:90px">
-
-
-
             <form id="forms" action="e_process.php" method="POST" class="form1" enctype="multipart/form-data" onsubmit="return finalval()" autocomplete="off">
-
                 <div class="row hed" id="hd_AddSite">
                     <div class="col-md-12">
                         <center>
@@ -519,7 +493,6 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) { ?>
                         </center>
                     </div>
                 </div>
-
                 <div class="row hed" id="hd_DVR" style="display:none">
                     <div class="col-md-12">
                         <center>
@@ -527,8 +500,6 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) { ?>
                         </center>
                     </div>
                 </div>
-
-
                 <div class="row hed" id="hd_Cloud" style="display:none">
                     <div class="col-md-12">
                         <center>
@@ -536,8 +507,6 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) { ?>
                         </center>
                     </div>
                 </div>
-
-
                 <div class="row div1">
                     <div class="col-md-2"></div>
                     <div class="col-md-4">
@@ -557,13 +526,7 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) { ?>
                         <div class="col-md-2"></div>
                     </div>
                 </div>
-
-
                 <div id="resultsection"></div>
-
-
-
-
                 <script>
                     $(document).ready(function() {
                         $('#project').trigger("change");
@@ -573,7 +536,7 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) { ?>
                     $(document).on('change', '#project', function() {
                         $("#resultsection").html('');
                         let project = $("#project").val();
-                        if (project == 1) {
+                        if (project == 1 || project == 10) {
                             let a = `
  <div id="AddSite"> 
    
@@ -618,6 +581,19 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) { ?>
      <option>Phase 10</option></select></div>
       <div  class="col-md-2"></div>
 </div>
+
+
+<div class="row div1">
+     <div  class="col-md-2"></div>
+    <div  class="col-md-4"><leble>Panel Power Connection</leble></div>
+     <div  class="col-md-4">   
+	 <select name="AddSite_PPS" id="AddSite_PPS" style="width: 180px;">
+     <option value="raw_power_connection">Raw Power Connection</option>
+     <option value="ups_power_connection">UPS Power Connection</option>
+     </select></div>
+      <div  class="col-md-2"></div>
+</div>
+
 
 <div class="row div1">
      <div  class="col-md-2"></div>
@@ -1242,6 +1218,27 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) { ?>
      <div  class="col-md-2"></div>
 </div>
 
+
+<div class="row div1 ">
+     <div class="col-md-2"></div>
+    <div class="col-md-4"><leble>Engineer Name</leble></div>
+     <div class="col-md-4">
+     <input type="text" name="Cloud_engineerName" required />
+</div>
+      <div class="col-md-2"></div>
+</div>
+
+
+
+
+<div class="row div1 ">
+     <div class="col-md-2"></div>
+    <div class="col-md-4"><leble>Live Snapshots</leble></div>
+     <div class="col-md-4">
+<input name="Cloud_livesnapshots[]" type="file" multiple/>
+</div>
+      <div class="col-md-2"></div>
+</div>
 
 
   
@@ -1997,6 +1994,28 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) { ?>
 
                     var html = '';
                     for (let i = 0; i < 4; i++) {
+                        let counter = i + 1;
+                        html += "<div class='custflex div1'>";
+                        html += "<div class=''><lable>Camera " + counter + " IP</lable><input type='text' name='AddSite_DVRIP[]' required></div>";
+                        html += "<div class=''><label>Port</label><input type='text' name='port[]' required></div>";
+
+
+                        html += " <div class=''><lable>IP Camera</lable> <select name='AddSite_DVRName[]' required><option value=''>Select Model</option><?php $model_sql = mysqli_query($conn, 'select * from dvr_name where bankwise_show=1');
+                                                                                                                                                            while ($model_sql_result = mysqli_fetch_array($model_sql)) {
+                                                                                                                                                                echo "<option>$model_sql_result[1]</option>";
+                                                                                                                                                            } ?> </select> </div>";
+
+                        html += "<div class=''> <label>Username</label><input type='text' name='AddSite_UserName[]' required> </div>";
+                        html += "<div class=''>  <label>Password</label><input type='text' name='AddSite_Password[]' required></div>";
+                        html += "</div>";
+                        $("#bankcondition").html(html);
+
+                    }
+                } else if (bank == 'SBI TOM 2') {
+                    $(".bankcase").css('display', 'none');
+
+                    var html = '';
+                    for (let i = 0; i <= 4; i++) {
                         let counter = i + 1;
                         html += "<div class='custflex div1'>";
                         html += "<div class=''><lable>Camera " + counter + " IP</lable><input type='text' name='AddSite_DVRIP[]' required></div>";

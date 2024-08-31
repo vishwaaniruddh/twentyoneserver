@@ -6,7 +6,6 @@ if(isset($_SESSION['login_user']) && isset($_SESSION['id']))
 {
     
 include 'config.php';
-
 $viewalert=$_POST['viewalert'];
 $panelid=$_POST['panelid'];
 $ATMID=$_POST['ATMID'];
@@ -50,46 +49,54 @@ function endsWith($haystack, $needle)
 if($viewalert=="" || $viewalert ==3){
 
 $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and b.`status`='C'";
+$abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and b.`status`='C'";
 }
 else if($viewalert ==1)
 {
     $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) ";
+	$abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) ";
     
 }
 else if($viewalert ==2)
 {
     $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and b.`status`='O' ";
-    
+    $abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and b.`status`='O' ";  
 }
 else if($viewalert ==4)
 {
     $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='014' and a.Panel_make='smart -i') or (b.zone='015' and a.Panel_make='rass') or (b.zone='008' and a.Panel_make='sec')) ";
+	$abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='014' and a.Panel_make='smart -i') or (b.zone='015' and a.Panel_make='rass') or (b.zone='008' and a.Panel_make='sec')) ";
     
 }
 else if($viewalert ==5)
 {
     $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='001' and a.Panel_make='smart -i') or (b.zone='029' and a.Panel_make='rass') or (b.zone='027' and a.Panel_make='sec') )  ";
+	$abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='001' and a.Panel_make='smart -i') or (b.zone='029' and a.Panel_make='rass') or (b.zone='027' and a.Panel_make='sec') )  ";
    //echo $abc; 
 }
 else if($viewalert ==6)
 {
     $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='008' and a.Panel_make='smart -i') or (b.zone='023' and a.Panel_make='rass') or (b.zone='021' and a.Panel_make='sec') )   ";
+	$abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='008' and a.Panel_make='smart -i') or (b.zone='023' and a.Panel_make='rass') or (b.zone='021' and a.Panel_make='sec') )   ";
     
 }
 else if($viewalert ==7)
 {
     $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='007' and a.Panel_make='smart -i') or (b.zone='003' and a.Panel_make='rass') or (b.zone='003' and a.Panel_make='sec') )   ";
+	$abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='007' and a.Panel_make='smart -i') or (b.zone='003' and a.Panel_make='rass') or (b.zone='003' and a.Panel_make='sec') )   ";
    //echo $abc; 
 }
 else if($viewalert ==8)
 {
     $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='002' and a.Panel_make='smart -i') or (b.zone='030' and a.Panel_make='rass') or (b.zone='028' and a.Panel_make='sec') )   ";
+	$abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='002' and a.Panel_make='smart -i') or (b.zone='030' and a.Panel_make='rass') or (b.zone='028' and a.Panel_make='sec') )   ";
    //echo $abc; 
 }
 
 else if($viewalert ==9)
 {
     $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='998' and a.Panel_make='rass'))   ";
+	$abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='998' and a.Panel_make='rass'))   ";
    //echo $abc; 
 }
 //$result=mysqli_query($conn,$abc);
@@ -97,90 +104,108 @@ else if($viewalert ==9)
 else if($viewalert ==10)
 {
     $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='004' and a.Panel_make='rass') or (b.zone='004' and a.Panel_make='sec') or (b.zone='015' and a.Panel_make='smart -i'))  ";
+	$abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='004' and a.Panel_make='rass') or (b.zone='004' and a.Panel_make='sec') or (b.zone='015' and a.Panel_make='smart -i'))  ";
    //echo $abc; 
 }
 
 else if($viewalert ==11)
 {
     $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='024' or b.zone='026' and a.Panel_make='rass') or (b.zone='022' and a.Panel_make='smart -i'))  ";
+    $abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='024' or b.zone='026' and a.Panel_make='rass') or (b.zone='022' and a.Panel_make='smart -i'))  ";
    //echo $abc; 
 }
 
 else if($viewalert ==12)
 {
     $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='025' and a.Panel_make='rass') or (b.zone='013' and a.Panel_make='sec') or (b.zone='017' and a.Panel_make='smart -i'))  ";
+	$abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='025' and a.Panel_make='rass') or (b.zone='013' and a.Panel_make='sec') or (b.zone='017' and a.Panel_make='smart -i'))  ";
    //echo $abc; 
 }
 
 else if($viewalert ==13)
 {
     $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='006' and a.Panel_make='rass') or (b.zone='006' and a.Panel_make='sec') or (b.zone='011' and a.Panel_make='smart -i'))  ";
+	$abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='006' and a.Panel_make='rass') or (b.zone='006' and a.Panel_make='sec') or (b.zone='011' and a.Panel_make='smart -i'))  ";
    //echo $abc; 
 }
 
 else if($viewalert ==14)
 {
     $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='013' and a.Panel_make='rass') or (b.zone='007' and a.Panel_make='sec') or (b.zone='013' and a.Panel_make='smart -i'))  ";
+	$abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='013' and a.Panel_make='rass') or (b.zone='007' and a.Panel_make='sec') or (b.zone='013' and a.Panel_make='smart -i'))  ";
    //echo $abc; 
 }
 else if($viewalert ==15)
 {
     $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='009' and a.Panel_make='rass') or (b.zone='005' and a.Panel_make='sec') or (b.zone='012' and a.Panel_make='smart -i'))  ";
+	$abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='009' and a.Panel_make='rass') or (b.zone='005' and a.Panel_make='sec') or (b.zone='012' and a.Panel_make='smart -i'))  ";
    //echo $abc; 
 }
 
 else if($viewalert ==16)
 {
     $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='002' and a.Panel_make='rass') or (b.zone='002' and a.Panel_make='sec') or (b.zone='010' and a.Panel_make='smart -i'))  ";
+	$abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='002' and a.Panel_make='rass') or (b.zone='002' and a.Panel_make='sec') or (b.zone='010' and a.Panel_make='smart -i'))  ";
    //echo $abc; 
 }
 
 else if($viewalert ==17)
 {
     $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='001' and a.Panel_make='rass') or (b.zone='001' and a.Panel_make='sec') or (b.zone='009' and a.Panel_make='smart -i'))  ";
+	$abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='001' and a.Panel_make='rass') or (b.zone='001' and a.Panel_make='sec') or (b.zone='009' and a.Panel_make='smart -i'))  ";
    //echo $abc; 
 }
 else if($viewalert ==18)
 {
     $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='004' and a.Panel_make='smart -i') or (b.zone='100' and a.Panel_make='sec') )  ";
+	$abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='004' and a.Panel_make='smart -i') or (b.zone='100' and a.Panel_make='sec') )  ";
    //echo $abc; 
 }
 else if($viewalert ==19)
 {
     $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='011' and a.Panel_make='rass') or (b.zone='041' and a.Panel_make='sec') or (b.zone='059' and a.Panel_make='smart -i'))  ";
+	$abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime,b.sendip FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and ((b.zone='011' and a.Panel_make='rass') or (b.zone='041' and a.Panel_make='sec') or (b.zone='059' and a.Panel_make='smart -i'))  ";
    //echo $abc; 
 }
 ?>
 <?php
 if($panelid!=""){
 $abc.=" and b.panelid='".$panelid."'";
+$abc_new.=" and b.panelid='".$panelid."'";
 }
 
 if($ATMID!=""){
 $abc.=" and a.ATMID='".$ATMID."'";
+$abc_new.=" and a.ATMID='".$ATMID."'";
 }
 
 if($DVRIP!=""){
 $abc.=" and a.DVRIP='".$DVRIP."'";
+$abc_new.=" and a.DVRIP='".$DVRIP."'";
 }
 if($compy!=""){
 $abc.=" and a.Customer='".$compy."'";
+$abc_new.=" and a.Customer='".$compy."'";
 }
 if($panelmk!=""){
 $abc.=" and a.Panel_Make='".$panelmk."'";
+$abc_new.=" and a.Panel_Make='".$panelmk."'";
 }
 
 if($fromdt!="" && $todt!=""){
-$abc.=" and b.receivedtime between '".$fromdt." 00:00:00' and '".$todt." 23:59:59' order by receivedtime desc;";
+$abc.=" and b.receivedtime between '".$fromdt." 00:00:00' and '".$todt." 23:59:59' order by receivedtime desc";
+$abc_new.=" and b.receivedtime between '".$fromdt." 00:00:00' and '".$todt." 23:59:59' order by receivedtime desc";
 //echo $abc;
 }
 else if($fromdt!="")
 {
     $abc.=" and b.receivedtime='".$fromdt."'";
+	$abc_new.=" and b.receivedtime='".$fromdt."'";
 }
 else if($todt!="")
 {
 $abc.=" and receivedtime='".$todt."'";
+$abc_new.=" and receivedtime='".$todt."'";
 }
 else
 {
@@ -188,14 +213,27 @@ $fromdt=date('Y-m-d 00:00:00');
 $todt=date('Y-m-d 23:59:59');
 
 $abc.=" and b.receivedtime between '".$fromdt."' and '".$todt."'";
+$abc_new.=" and b.receivedtime between '".$fromdt."' and '".$todt."'";
 }
 
 
-echo $abc;
+
+
+// $abc .= " Limit 1000" ;
+// $abc_new .= " Limit 1000" ;
     $result=mysqli_query($conn,$abc);
     
      $Num_Rows=mysqli_num_rows($result);
+	 
+	 $result_new=mysqli_query($conn,$abc_new);
+    
+     $Num_Rows_new=mysqli_num_rows($result_new);
+	 
+	 $Num_Rows = $Num_Rows + $Num_Rows_new;
  $qr22=$abc; 
+echo $abc;
+
+// return ; 
    /* $Per_Page =$_POST['perpg'];   // Records Per Page
 
 $Page = $strPage;
@@ -242,6 +280,14 @@ $sr=1;
 	   $sr=$sr+1;
 	}
 */
+
+
+  ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+
+
 ?>
 
 <html>
@@ -447,6 +493,145 @@ $sql1="select sensorname as Description,camera from securico where (Zone='".$row
   </tr>
 	
   <?php  $sr++; } ?>
+  
+  
+  
+  <?php  
+  
+  if($Num_Rows_new>0){
+  while($row_new = mysqli_fetch_array($result_new)) { 
+  
+  $incident_query= mysqli_query($conn,"select TestingByService,remark from Testing_alertDetails where incident_id='".$row_new["id"]."' ");
+   $incident_fetch=mysqli_fetch_array($incident_query);
+	   
+
+  
+  
+  
+  ?>
+
+ <tr style="background-color:#cfe8c7">
+    <!--<td><?php echo $sr;?></td>-->
+    <td><?php echo $row_new["Customer"];?></td>
+     <td><?php echo $row_new["id"];?></td>
+     <td><?php echo $row_new["zon"];?></td>
+     <!-- <td><?php echo $row_new["City"].",".$row_new["State"];?></td>
+     <td><?php echo $row_new["ATMShortName"];?></td>-->
+    <td><?php echo $row_new["ATMID"];?></td>
+    <td><?php echo $row_new["SiteAddress"];?></td>
+	<td><?php echo $row_new["City"];?></td>
+	<td><?php echo $row_new["State"];?></td>
+	<td><?php echo $row_new["zone"];?></td>
+	<td><?php echo $row_new["alarm"];?></td>
+ 	
+    <?php
+     $dtconvt=$row_new["receivedtime"];
+	 $timestamp = strtotime($dtconvt);
+     $newDate = date('d-F-Y', $timestamp); 
+//echo $newDate; //outputs 02-March-2011
+	 
+
+/*
+if(strpos($row["Panel_make"], 'SMART') !== FALSE)
+    {
+    
+$sql1="select Description,Camera from smartialarms where (Zone='".$row["zone"]."')";
+
+    }
+	else if(strpos($row["Panel_make"], 'SEC') !== FALSE)
+    {
+    
+$sql1="select sensorname as Description,camera from securico where (Zone='".$row["zone"]."')";
+
+    }
+	
+	 else
+	{
+		 $sql1="select Description,Camera from zonecameras where (ZoneNo='".$row["zone"]."')"; 
+	}
+	$result1=mysqli_query($conn,$sql1);
+	$row1 = mysqli_fetch_array($result1);
+	
+	*/
+	
+	if($row_new["Panel_make"]== "SMART -I"){		 
+     $sql1="select SensorName as Description,Camera from smarti where (Zone='".$row_new["zone"]."' and SCODE='".$row_new['alarm']."')";
+	}
+	else if($row_new["Panel_make"]== "SMART-IN"){		 
+     $sql1="select SensorName as Description,Camera from smartinew where (Zone='".$row_new["zone"]."' and SCODE='".$row_new['alarm']."')";
+	}
+	else if($row_new["Panel_make"]== "SEC"){		 
+      $sql1="select sensorname as Description,camera from securico where (Zone='".$row_new["zone"]."' and SCODE='".$row_new['alarm']."')";
+	}
+	else if($row_new["Panel_make"]== "sec_sbi"){		 
+     $sql1="select SensorName as Description,Camera from sec_sbi where (Zone='".$row_new["zone"]."' and SCODE='".$row_new['alarm']."')";
+	}
+	else if($row_new["Panel_make"]== "RASS"){		 
+     $sql1="select SensorName as Description,Camera from rass where (Zone='".$row_new["zone"]."' and SCODE='".$row_new['alarm']."')";
+	}
+	  else if($row_new["Panel_make"]== "rass_cloud"){    
+	  $sql1="select SensorName as Description,Camera from rass_cloud where (Zone='".$row_new["zone"]."' and SCODE='".$row_new['alarm']."')";
+	  }
+	else if($row_new["Panel_make"]== "rass_sbi"){		 
+     $sql1="select SensorName as Description,Camera from rass_sbi where (Zone='".$row_new["zone"]."' and SCODE='".$row_new['alarm']."')";
+	}
+	else if($row_new["Panel_make"]== "Raxx"){		 
+     $sql1="select SensorsName as Description,Camera from raxx where ZoneNumber='".$row_new["zone"]."' ";
+	}
+	else if($row_new["Panel_make"]== "securico_gx4816"){		 
+     $sql1="select sensorname as Description,camera from securico_gx4816 where zone='".$row_new["zone"]."' ";
+	} 
+	
+	else if($row_new["Panel_make"]== "smarti_hdfc32"){		 
+     $sql1="select SensorName as Description,Camera from smarti_hdfc32 where zone='".$row_new["zone"]."' ";
+	} 
+	
+	
+	/*
+	if(strpos($row["Panel_make"], 'SMART') !== FALSE)
+    {
+    
+     $sql1="select SensorName as Description,Camera from smarti where (Zone='".$row["zone"]."' and SCODE='".$row['alarm']."')";
+
+    }
+	else if(strpos($row["Panel_make"], 'SEC') !== FALSE)
+    {
+    
+     $sql1="select sensorname as Description,camera from securico where (Zone='".$row["zone"]."')";
+
+    }
+	
+	 else
+	{
+		
+		 $sql1="select SensorName as Description,Camera from rass where (ZONE='".$row["zone"]."' and SCODE='".$row['alarm']."')"; 
+	}*/
+	$result1=mysqli_query($conn,$sql1);
+	$row1 = mysqli_fetch_array($result1);
+	 ?>
+	 
+
+	 
+	 	<td><?php echo $row1["Description"];?></td>
+	 	<td><?php if(endsWith($row_new["alarm"], "R"))echo $row1["Description"].' Restoral'; else echo $row1["Description"];?></td>
+        <td><?php echo $row_new["createtime"];?></td>
+		<td><?php echo $row_new["receivedtime"];?></td>
+		<td><?php echo $newDate;?></td>
+		<td><?php echo $row_new["DVRIP"];?></td>
+		<td><?php echo $row_new["Panel_make"];?></td>	
+		<td><?php echo $row_new["panelid"];?></td>
+        <td><?php echo $row_new["Bank"];?></td>
+	    <!--<td><?php echo $row_new["comment"];?></td>-->
+        <td><?php if(endsWith($row_new["alarm"], "R"))echo 'Non-Reactive'; else echo 'Reactive';?></td>
+        <td><?php echo $row_new["closedBy"];?></td>
+        <td><?php echo $row_new["closedtime"];?></td>
+	    <td><?php echo $row_new["closedtime"].'*'.$row_new["comment"].'*'.$row_new["closedBy"];?></td>
+		<td><?php echo $row_new["sendip"];?></td>
+		<td><?php echo $incident_fetch["TestingByService"];?></td>
+		<td><?php echo $incident_fetch["remark"];?></td>
+  </tr>
+	
+<?php  $sr++; } }?>
 	
     
 

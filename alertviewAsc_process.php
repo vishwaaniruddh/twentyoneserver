@@ -47,6 +47,7 @@ function endsWith($haystack, $needle)
 if($viewalert=="" || $viewalert ==3){
 
 $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and b.`status`='C'";
+$abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and b.`status`='C'";
 }
 else if($viewalert ==1)
 {
@@ -54,21 +55,24 @@ else if($viewalert ==1)
 
 $abc="select a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State, b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime from alerts b INNER JOIN sites a ON b.panelid = a.NewPanelID LEFT JOIN sites c ON b.panelid = c.OldPanelID WHERE 1=1 ";
     // WHERE a.Customer='Diebold' and b.receivedtime between '2022-11-15 00:00:00' and '2022-11-15 23:59:59' order by b.receivedtime ASC
+	
+    $abc_new="select a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State, b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime from backalerts b INNER JOIN sites a ON b.panelid = a.NewPanelID LEFT JOIN sites c ON b.panelid = c.OldPanelID WHERE 1=1 ";	
 }
 else if($viewalert ==2)
 {
     $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and b.`status`='O' ";
-    
+    $abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and b.`status`='O' ";
 }
 else if($viewalert ==4)
 {
    // $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and b.zone IN ('015','014') ";
       $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and b.zone IN ('014') ";
-  
+    $abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and b.zone IN ('014') ";
 }
 else if($viewalert ==5)
 {
     $abc="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime FROM sites a,`alerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and b.zone IN ('001','002','018') ";
+	$abc_new="SELECT  a.Customer,a.Bank,a.ATMID,a.ATMShortName,a.SiteAddress,a.DVRIP,a.Panel_make,a.zone as zon,a.City,a.State,b.id,b.panelid,b.createtime,b.receivedtime,b.comment,b.zone,b.alarm,b.closedBy,b.closedtime FROM sites a,`backalerts` b WHERE (a.OldPanelID=b.panelid or a.NewPanelID=b.panelid) and b.zone IN ('001','002','018') ";
    echo $abc; 
 }
 
@@ -79,31 +83,38 @@ else if($viewalert ==5)
 <?php
 if($panelid!=""){
 $abc.=" and b.panelid='".$panelid."'";
+$abc_new.=" and b.panelid='".$panelid."'";
 }
 
 if($ATMID!=""){
 $abc.=" and a.ATMID='".$ATMID."'";
+$abc_new.=" and a.ATMID='".$ATMID."'";
 }
 
 if($DVRIP!=""){
 $abc.=" and a.DVRIP='".$DVRIP."'";
+$abc_new.=" and a.DVRIP='".$DVRIP."'";
 }
 if($compy!=""){
 $abc.=" and a.Customer='".$compy."'";
+$abc_new.=" and a.Customer='".$compy."'";
 }
 
 
 if($fromdt!="" && $todt!=""){
 $abc.=" and b.receivedtime between '".$fromdt." 00:00:00' and '".$todt." 23:59:59' order by b.receivedtime ASC;";
+$abc_new.=" and b.receivedtime between '".$fromdt." 00:00:00' and '".$todt." 23:59:59' order by b.receivedtime ASC;";
 //$abc.=" and b.receivedtime between '".$fromdt."' and '".$todt."' order by receivedtime ASC;";
 }
 else if($fromdt!="")
 {
     $abc.=" and b.receivedtime='".$fromdt."'";
+	$abc_new.=" and b.receivedtime='".$fromdt."'";
 }
 else if($todt!="")
 {
 $abc.=" and b.receivedtime='".$todt."'";
+$abc_new.=" and b.receivedtime='".$todt."'";
 }
 else
 {
@@ -111,14 +122,19 @@ $fromdt=date('Y-m-d 00:00:00');
 $todt=date('Y-m-d 23:59:59');
 
 $abc.=" and b.receivedtime between '".$fromdt."' and '".$todt."'";
+$abc_new.=" and b.receivedtime between '".$fromdt."' and '".$todt."'";
 }
 
 
 echo $abc;
 
     $result=mysqli_query($conn,$abc);
+	$result_new=mysqli_query($conn,$abc_new);
     
      $Num_Rows=mysqli_num_rows($result);
+	 $Num_Rows_New=mysqli_num_rows($result_new);
+	 
+	 $Num_Rows = $Num_Rows + $Num_Rows_New;
   
    /* $Per_Page =$_POST['perpg'];   // Records Per Page
 
@@ -351,6 +367,126 @@ $sr++;
   ?>
 <?php 
 }
+?>
+
+
+<?php  
+    if($Num_Rows_New>0){
+       while($row_new = mysqli_fetch_array($result_new)) { 
+  
+  
+  
+  
+  
+  ?>
+
+ <tr style="background-color:#cfe8c7">
+    <!--<td><?php echo $sr;?></td>-->
+    <td><?php echo $row_new["Customer"];?></td>
+     <td><?php echo $row_new["id"];?></td>
+     <td><?php echo $row_new["zon"];?></td>
+      <!--<td><?php echo $row_new["City"].",".$row_new["State"];?></td>
+        <td><?php echo $row_new["ATMShortName"];?></td>-->
+  
+  
+    
+     <td><?php echo $row_new["ATMID"];?></td>
+    <td><?php echo $row_new["SiteAddress"];?></td>
+    <td><?php echo $row_new["City"];?></td>
+		    <td><?php echo $row_new["State"];?></td>
+	
+	
+    <?php
+$dtconvt=$row_new["receivedtime"];
+	 $timestamp = strtotime($dtconvt);
+$newDate = date('d-F-Y', $timestamp); 
+//echo $newDate; //outputs 02-March-2011
+	 
+
+/*
+if(strpos($row["Panel_make"], 'SMART') !== FALSE)
+    {
+    
+$sql1="select Description,Camera from smartialarms where (Zone='".$row["zone"]."')";
+
+    }
+	 else
+	{
+		
+		 $sql1="select Description,Camera from zonecameras where (ZoneNo='".$row["zone"]."')"; 
+
+	}
+	$result1=mysqli_query($conn,$sql1);
+	$row1 = mysqli_fetch_array($result1);
+	*/
+	/*if(strpos($row["Panel_make"], 'SMART') !== FALSE)
+    {
+    
+$sql1="select SensorName as Description,Camera from smarti where (Zone='".$row["zone"]."' and SCODE='".$row['alarm']."')";
+
+    }
+	else if(strpos($row["Panel_make"], 'SEC') !== FALSE)
+    {
+    
+$sql1="select sensorname as Description,camera from securico where (Zone='".$row["zone"]."')";
+
+    }
+	
+	 else
+	{
+		
+		 $sql1="select SensorName as Description,Camera from rass where (ZONE='".$row["zone"]."' and SCODE='".$row['alarm']."')"; 
+	//	 $result2=mysqli_query($conn,$sql2);
+	}
+	$result1=mysqli_query($conn,$sql1);
+	$row1 = mysqli_fetch_array($result1);
+	
+	*/
+	
+	if(strpos($row_new["Panel_make"], 'SMART') !== FALSE){
+		$sql1="select Description,Camera from smartialarms where (Zone='".$row_new["zone"]."')";
+    }else if(strpos($row_new["Panel_make"], 'SEC') !== FALSE){
+    	$sql1="select sensorname as Description,camera from securico where (Zone='".$row_new["zone"]."')";
+    }else{
+		 $sql1="select Description,Camera from zonecameras where (ZoneNo='".$row_new["zone"]."')"; 
+	}
+	
+	$result1=mysqli_query($conn,$sql1);
+	$row1 = mysqli_fetch_array($result1);
+	 ?>
+	 
+
+	 
+	 	<td><?php echo $row1["Description"];?></td>
+	 	<td><?php if(endsWith($row_new["alarm"], "R"))echo $row1["Description"].' Restoral';
+else echo $row1["Description"];
+?></td>
+	 	 <td><?php echo $row_new["createtime"];?></td>
+    <td><?php echo $row_new["receivedtime"];?></td>
+    <td><?php echo $newDate;?></td>
+    <td><?php echo $row_new["DVRIP"];?></td>
+    <td><?php echo $row_new["Panel_make"];?></td>	
+	<td><?php echo $row_new["panelid"];?></td>
+     <td><?php echo $row_new["Bank"];?></td>
+	
+	<!--<td><?php echo $row_new["comment"];?></td>-->
+<td><?php if(endsWith($row_new["alarm"], "R"))echo 'Non-Reactive';
+else echo 'Reactive';
+?></td>
+
+
+<td><?php echo $row_new["closedBy"];?></td>
+<td><?php echo $row_new["closedtime"];?></td>
+<td><?php echo $row_new["closedtime"].'*'.$row_new["comment"].'*'.$row_new["closedBy"];?></td>
+<td><?php echo $row_new["zone"];?></td>
+<td><?php echo $row_new["alarm"];?></td>
+
+    </tr>
+   <?php
+$sr++;
+  ?>
+<?php 
+} }
 ?>
 
 </table>

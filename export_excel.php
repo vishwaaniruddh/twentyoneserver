@@ -44,7 +44,10 @@ $to = $from;
 // $tableName = 'alerts_' . date('Y_m_d', strtotime($to));
 $tableName = 'alerts' ;
 
-$statement = "select a.Customer as 'Client Name',b.id as 'Incident Number', a.Zone as Region, a.ATMID, a.SiteAddress as Address,a.City,a.State,b.createtime as 'Incident Date Time',b.receivedtime as 'Alarm Received Date Time',b.receivedtime as 'Close Date Time',a.DVRIP,b.panelid,a.Bank,
+$statement = "select a.Customer as 'Client Name',b.id as 'Incident Number', a.Zone as Region, a.ATMID,
+a.City,a.State,a.SiteAddress,
+ b.createtime as 'Incident Date Time',
+ b.receivedtime as 'Alarm Received Date Time',b.receivedtime as 'Close Date Time',a.DVRIP,
 (CASE WHEN LOWER(RIGHT(b.alarm,1))='R' THEN 'Non-Reactive'
  ELSE 'Reactive'
 END) AS `Reactive`,
@@ -55,16 +58,27 @@ a.Panel_Make,
 '' as  `Incident Category`,
 (CASE WHEN LOWER(RIGHT(b.alarm,1))='R' THEN 'Restoral'
 END) AS `Alarm Message`
-from $tableName b 
+
+from alerts b 
 INNER JOIN sites a ON b.panelid = a.NewPanelID
 LEFT JOIN sites c ON b.panelid = c.OldPanelID
-WHERE a.Customer='".$customer."' and b.receivedtime between '".$to." 00:00:00' and '".$from." 23:59:59'
-"; 
+WHERE 1  ";
+
+
+if(isset($customer) && !empty($customer)){
+
+  $statement .= " and a.customer='".$customer."' " ; 
+}
+
+$statement .= " and b.receivedtime between '".$to." 00:00:00' and '".$from." 23:59:59'"; 
+
+// echo $statement ; 
+
 
 // WHERE a.Customer='".$customer."' and b.receivedtime between '".$to." 00:00:00' and '".$from." 23:59:59'
 
 $contents='';
-    $contents.="Sr No \t Client Name \t Incident Number \t Region \t ATMID \t Address \t City \t State \t Incident Category \t Alarm Message \t Incident Date Time \t Alarm Received Date Time \t Close Date Time \t DVRIP \t Panel_make \t panelid \t Bank \t Reactive \t Closed By \t Closed Date \t Remark \t Zone \t alarm \t";
+    $contents.="Sr No \t Client Name \t Incident Number \t Region \t ATMID \t City \t State \t Address \t Incident Category \t Alarm Message \t Incident Date Time \t Alarm Received Date Time \t Close Date Time \t DVRIP \t Panel_make \t Reactive \t Closed By \t Closed Date \t Remark \t Zone \t alarm \t";
 ?>
 
 
@@ -158,9 +172,10 @@ if($_panel_make=='RASS'){
        // $contents.=$sql_result['Incident Number']."\t"; 
        $contents.=$sql_result['Region']."\t"; 
        $contents.=$sql_result['ATMID']."\t"; 
-       $contents.=remove_special($sql_result['Address'])."\t"; 
+
        $contents.=$sql_result['City']."\t"; 
        $contents.=$sql_result['State']."\t"; 
+       $contents.=$sql_result['SiteAddress']."\t"; 
        $contents.=$sensorname."\t"; 
 
 
@@ -174,8 +189,6 @@ if($_panel_make=='RASS'){
        $contents.=$sql_result['Close Date Time']."\t"; 
        $contents.=$sql_result['DVRIP']."\t"; 
        $contents.=$_panel_make."\t"; 
-       $contents.=$sql_result['panelid']."\t"; 
-       $contents.=$sql_result['Bank']."\t"; 
        $contents.=$sql_result['Reactive']."\t"; 
        $contents.=$sql_result['Closed By']."\t"; 
        $contents.=$sql_result['Closed Date']."\t"; 

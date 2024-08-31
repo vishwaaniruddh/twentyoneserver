@@ -24,8 +24,8 @@ $degi=$_POST['degi'];
 
 if(isset($_POST['sub'])){
 
-echo $sql="insert into LoginUsers(name,uname,pwd,permission,designation)
-values('$fn','$name','$password','$drop',$degi)";
+echo $sql="insert into LoginUsers(name,uname,pwd,permission,designation,level,cust_id,bank_id,branch,zone)
+values('$fn','$name','$password','$drop',$degi,'','','','','')";
 $result=mysqli_query($conn,$sql);
 //echo $sql;
 

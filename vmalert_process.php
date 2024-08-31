@@ -191,6 +191,7 @@ $todt=date('Y-m-d 23:59:59');
 
 $abc.=" and b.receivedtime between '".$fromdt."' and '".$todt."'" ; 
 }
+// $abc .= " limit 100";
 echo $abc;
 // return ; 
     $result=mysqli_query($conn,$abc);

@@ -31,7 +31,7 @@ $simowner = $_REQUEST['sim_owner'];
 
 
 
-if($project=="1"){ 
+if($project=="1" || $project=="10"){ 
 
 if(isset($_REQUEST['port'])){
 $port = $_REQUEST['port'];
@@ -71,6 +71,8 @@ $engname=$_REQUEST['AddSite_engname'];
 $Bank=$_REQUEST['AddSite_Bank'];
 
 $installationDate = $_REQUEST['installationDate'];
+
+$AddSite_PPS = $_REQUEST['AddSite_PPS'];
 
 date_default_timezone_set('Asia/Kolkata');
 $curentdt=date("Y-m-d H:i:s");
@@ -160,17 +162,17 @@ $n=mysqli_num_rows($chkAvailable);
  echo "<script>alert('Error : Duplicate Site ! ')</script>";
 }else{
 
-echo $sql="insert into sites(Status,Phase,Customer,Bank,ATMID,ATMID_2,ATMID_3,ATMID_4,TrackerNo,ATMShortName,SiteAddress,City,State,Zone,Panel_Make,OldPanelID,NewPanelID,DVRIP,DVRName,UserName,Password,live,current_dt,mailreceive_dt,eng_name,addedby,site_remark,DVR_Model_num,Router_Model_num,PanelIP,CTS_LocalBranch,RouterIp,last_modified,installationDate)
-values('$Status','$Phase','$Customer','$Bank','$ATMID','$ATMID_2','$ATMID_3','$ATMID_4','$TrackerNo','$ATMShortName','$SiteAddress','$City','".$fetch[0]."','$Zone','$Panel_Make','$OldPanelID','$NewPanelID','$DVRIP[0]','$DVRName[0]','$UserName[0]','$Password[0]','P','$curentdt','$instdt.$t','$engname','".$_SESSION['name']."','$remark','$DVR_Model_num','$Router_Model_num','$PanelsIP','$CtsLocalBranch','$RouterIP',1,'".$installationDate."')";
+echo $sql="insert into sites(Status,Phase,Customer,Bank,ATMID,ATMID_2,ATMID_3,ATMID_4,TrackerNo,ATMShortName,SiteAddress,City,State,Zone,Panel_Make,OldPanelID,NewPanelID,DVRIP,DVRName,UserName,Password,live,current_dt,mailreceive_dt,eng_name,addedby,site_remark,DVR_Model_num,Router_Model_num,PanelIP,CTS_LocalBranch,RouterIp,last_modified,installationDate,panel_power_connection,live_date)
+values('$Status','$Phase','$Customer','$Bank','$ATMID','$ATMID_2','$ATMID_3','$ATMID_4','$TrackerNo','$ATMShortName','$SiteAddress','$City','".$fetch[0]."','$Zone','$Panel_Make','$OldPanelID','$NewPanelID','$DVRIP[0]','$DVRName[0]','$UserName[0]','$Password[0]','P','$curentdt','$instdt.$t','$engname','".$_SESSION['name']."','$remark','$DVR_Model_num','$Router_Model_num','$PanelsIP','$CtsLocalBranch','$RouterIP',1,'".$installationDate."','".$AddSite_PPS."', '".$created_at."')";
 //echo $sql;
 $result2=mysqli_query($conn,$sql);
 $last2=mysqli_insert_id($conn);
 
-$site_details = "insert into sites_details(site_id, routebrand, router_id, simnumber, simowner, status, created_at,project) values('".$last2."', '".$routebrand."', '".$router_id."', '".$simnumber."', '".$simowner."', '1', '".$created_at."','1')" ; 
+$site_details = "insert into sites_details(site_id, routebrand, router_id, simnumber, simowner, status, created_at,project) values('".$last2."', '".$routebrand."', '".$router_id."', '".$simnumber."', '".$simowner."', '1', '".$created_at."','".$project."')" ; 
 
 mysqli_query($conn,$site_details);
 
-if($Bank=='PNB'){
+if($Bank=='PNB' || $Bank=='SBI TOM 2'){
 
         mysqli_query($con,"update sites_info set status=0 where site_id='".$last2."'");
 
@@ -299,7 +301,8 @@ window.open("Project_Add.php", "_self");
 
  }else if($project=="2"){
 	 
-
+$datetime = date('Y-m-d h:i:s');
+	$userid = $_SESSION['id'];
 $Status=$_REQUEST['AddDVR_Status'];
 $Phase=$_REQUEST['AddDVR_Phase'];
 $Customer=$_REQUEST['AddDVR_Customer'];
@@ -320,6 +323,8 @@ $CTSLocalBranch=$_REQUEST['AddDVR_LocalBranch'];
 $CTS_BM_Name=$_REQUEST['AddDVR_BM_Name'];
 $CTS_BM_Number=$_REQUEST['AddDVR_BM_Number'];
 $install_Status=$_REQUEST['AddDVR_install_Status'];
+$Cloud_engineerName = $_REQUEST['Cloud_engineerName'];
+$Cloud_livesnapshots = $_REQUEST['Cloud_livesnapshots'];
 date_default_timezone_set('Asia/Kolkata');
 $curentdt=date("Y-m-d H:i:s");
 $t=date("H:i:s");
@@ -361,6 +366,36 @@ $last=mysqli_insert_id($conn);
 $site_details = "insert into sites_details(site_id, routebrand, router_id, simnumber, simowner, status, created_at) values('".$last."', '".$routebrand."', '".$router_id."', '".$simnumber."', '".$simowner."', '1', '".$created_at."')" ; 
 
 mysqli_query($conn,$site_details);
+
+
+$allfiles = array();
+
+if (!empty($_FILES['Cloud_livesnapshots']['name'][0])) {
+    $destinationFolder = 'dvrdetails/';
+    $totalFiles = count($_FILES['Cloud_livesnapshots']['name']);
+    $allfiles = array();
+
+    for ($i = 0; $i < $totalFiles; $i++) {
+        $fileName = $_FILES['Cloud_livesnapshots']['name'][$i];
+        $fileTmpPath = $_FILES['Cloud_livesnapshots']['tmp_name'][$i];
+       
+        if ($fileName !== '') {
+            $newFileName = uniqid() . '_' . $fileName;
+
+            $destinationFilePath = $destinationFolder . $newFileName;
+            if (move_uploaded_file($fileTmpPath, $destinationFilePath)) {
+                $allfiles[] = $destinationFilePath;
+            } 
+        }
+    }
+} 
+
+$allfiles = json_encode($allfiles);
+$Cloud_livesnapshots = $allfiles ;
+
+$details_sql = "insert into dvronline_details(dvrid,tracker,bmName,engineerName,snapshots,status,created_at,created_by,statusDate) values('".$last."','".$TrackerNo."','".$CTS_BM_Name."','".$Cloud_engineerName."','".$Cloud_livesnapshots."',1,'".$datetime."','".$userid."','".$installationDate."')";
+
+mysqli_query($conn,$details_sql);
 
 
 
@@ -487,12 +522,12 @@ if($n>"0")   {
 }else{
 
 
- $sql="insert into dvronline(ATMID,ATMID2,Address,Location,State,IPAddress,`Rourt ID`,`Live Date`,UserName,Password,Status,dvrname,customer,Bank,remark,zone,city,old_atm,installationDate)values('".$ATMID."','".$ATMID2."','".$SiteAddress."','".$ATMShortName."','".$fetch['state']."','".$DVRIP."','".$Router_Model_num."','".$curentdt."','".$CTS_UserName."','".$CTS_Password."','".$Status."','".$dvrname."','".$Customer."','".$bank."','".$remark."','".$Cloud_Zone."','".$Cloud_City."','".$Cloud_OldATM."','".$installationDate."')";
+ $sql="insert into dvronline(ATMID,ATMID2,Address,Location,State,IPAddress,`Rourt ID`,`LiveDate`,UserName,Password,Status,dvrname,customer,Bank,remark,zone,city,old_atm,installationDate)values('".$ATMID."','".$ATMID2."','".$SiteAddress."','".$ATMShortName."','".$fetch['state']."','".$DVRIP."','".$Router_Model_num."','".$curentdt."','".$CTS_UserName."','".$CTS_Password."','".$Status."','".$dvrname."','".$Customer."','".$bank."','".$remark."','".$Cloud_Zone."','".$Cloud_City."','".$Cloud_OldATM."','".$installationDate."')";
 
 //$sql="insert into sitesd(Status,Customer,ATMID,ATMShortName,SiteAddress,State,UserName,Password,live,current_dt,DVRIP,Router_Model_num,DVRName,addedby,Project_Id)values('$Status','$Customer','$ATMID','$ATMShortName','$SiteAddress','".$fetch[0]."','".$CTS_UserName."','".$CTS_Password."','P','$curentdt','$DVRIP','$Router_Model_num','$dvrname','".$_SESSION['name']."','$project')";
 //mysqli_query($cn,$sql);
 
-// echo $sql;
+//echo $sql; die;
 
 if($result=mysqli_query($conn,$sql)){
 

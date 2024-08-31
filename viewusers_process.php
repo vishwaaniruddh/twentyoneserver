@@ -54,7 +54,7 @@ else
 }
 $sql.=" ORDER BY id  DESC ";
 $sql.=" LIMIT $Page_Start , $Per_Page";
-	
+	// echo $sql;
 $qrys=mysqli_query($conn,$sql);
 
 	$count=mysqli_num_rows($qrys);
@@ -108,6 +108,10 @@ tr,th{
 </style>
 
 <div align="center">total records:<?php echo $Num_Rows?></div>
+
+
+
+
   <table border=1 style="margin-top:30px" align="center">
   <tr>
       <th>Sr No</th>
@@ -135,7 +139,21 @@ tr,th{
     
    <td> <a href="edituser.php?userid=<?php echo $row[0]; ?>"  title="Edit" class="icon-1 info-tooltip">Edit</a></td>
    <!--<td> <a href="edituser.php?userid=<?php echo $row[0]; ?>"  title="delete" class="icon-1 info-tooltip">Delete</a></td>-->
-   <td><input type="button" onclick="window.open('delete_user.php?id=<?php echo $row[0];?>','_self');" value="Delete"></td>
+   <td>
+	
+ 
+ <?php
+ 
+ if($_SESSION['id']=='647'){
+?>
+   <input type="button" onclick="window.open('delete_user.php?id=<?php echo $row[0];?>','_self');" value="Delete"></td>
+
+<?php
+ }else{
+	echo 'No Permission To delete !' ; 
+ }
+ ?>
+
   </tr>
   
      

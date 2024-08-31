@@ -334,23 +334,23 @@ class Workbook extends WriterPart
             $objWriter->writeAttribute('name', '_xlnm._FilterDatabase');
             $objWriter->writeAttribute('localSheetId', $pSheetId);
             $objWriter->writeAttribute('hidden', '1');
-
+    
             // Create absolute coordinate and write as raw text
             $range = Coordinate::splitRange($autoFilterRange);
             $range = $range[0];
-            //    Strip any worksheet ref so we can make the cell ref absolute
+            // Strip any worksheet ref so we can make the cell ref absolute
             list($ws, $range[0]) = Worksheet::extractSheetTitle($range[0], true);
-
+    
             $range[0] = Coordinate::absoluteCoordinate($range[0]);
             $range[1] = Coordinate::absoluteCoordinate($range[1]);
             $range = implode(':', $range);
-
+    
             $objWriter->writeRawData('\'' . str_replace("'", "''", $pSheet->getTitle()) . '\'!' . $range);
-
+    
             $objWriter->endElement();
         }
     }
-
+    
     /**
      * Write Defined Name for PrintTitles.
      *
@@ -365,36 +365,36 @@ class Workbook extends WriterPart
             $objWriter->startElement('definedName');
             $objWriter->writeAttribute('name', '_xlnm.Print_Titles');
             $objWriter->writeAttribute('localSheetId', $pSheetId);
-
+    
             // Setting string
             $settingString = '';
-
+    
             // Columns to repeat
             if ($pSheet->getPageSetup()->isColumnsToRepeatAtLeftSet()) {
                 $repeat = $pSheet->getPageSetup()->getColumnsToRepeatAtLeft();
-
+    
                 $settingString .= '\'' . str_replace("'", "''", $pSheet->getTitle()) . '\'!$' . $repeat[0] . ':$' . $repeat[1];
             }
-
+    
             // Rows to repeat
             if ($pSheet->getPageSetup()->isRowsToRepeatAtTopSet()) {
                 if ($pSheet->getPageSetup()->isColumnsToRepeatAtLeftSet()) {
                     $settingString .= ',';
                 }
-
+    
                 $repeat = $pSheet->getPageSetup()->getRowsToRepeatAtTop();
-
+    
                 $settingString .= '\'' . str_replace("'", "''", $pSheet->getTitle()) . '\'!$' . $repeat[0] . ':$' . $repeat[1];
             }
-
+    
             $objWriter->writeRawData($settingString);
-
+    
             $objWriter->endElement();
         }
     }
-
+    
     /**
-     * Write Defined Name for PrintTitles.
+     * Write Defined Name for PrintArea.
      *
      * @param XMLWriter $objWriter XML Writer
      * @param Worksheet $pSheet
@@ -407,20 +407,21 @@ class Workbook extends WriterPart
             $objWriter->startElement('definedName');
             $objWriter->writeAttribute('name', '_xlnm.Print_Area');
             $objWriter->writeAttribute('localSheetId', $pSheetId);
-
+    
             // Print area
             $printArea = Coordinate::splitRange($pSheet->getPageSetup()->getPrintArea());
-
+    
             $chunks = [];
             foreach ($printArea as $printAreaRect) {
                 $printAreaRect[0] = Coordinate::absoluteReference($printAreaRect[0]);
                 $printAreaRect[1] = Coordinate::absoluteReference($printAreaRect[1]);
                 $chunks[] = '\'' . str_replace("'", "''", $pSheet->getTitle()) . '\'!' . implode(':', $printAreaRect);
             }
-
+    
             $objWriter->writeRawData(implode(',', $chunks));
-
+    
             $objWriter->endElement();
         }
     }
+    
 }

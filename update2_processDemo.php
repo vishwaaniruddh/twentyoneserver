@@ -54,6 +54,37 @@ function addTime($time, $days, $months, $years)
 
 //=====Broadband Details===========
 $site_id = $_POST['sn'];
+
+if(isset($_POST['zonal'])){
+$zonal = $_POST['zonal'];
+}else{
+	$zonal = "";
+}
+if(isset($_POST['circle'])){
+$circle = $_POST['circle'];
+}else{
+	$circle = "";
+}
+if(isset($_POST['site_type'])){
+$site_type = $_POST['site_type'];
+}else{
+	$site_type = "";
+}
+
+$power_connection = $_POST['AddSite_PPS'];
+
+$ATMID = $_POST['ATMID'];
+$ATMID_2 = $_POST['ATMID_2'];
+$ATMID_3 = $_POST['ATMID_3'];
+$ATMID_4 = $_POST['ATMID_4'];
+
+
+
+
+
+
+
+
 $NetworkType = $_POST['NetworkType'];
 $ProviderName = $_POST['ProviderName'];
 $ProviderEmail = $_POST['ProviderEmail'];
@@ -73,11 +104,6 @@ $router_id = $_POST['router_id'];
 $simnumber = $_POST['sim_number'];
 $simowner = $_POST['sim_owner'];
 
-
-$ATMID = $_POST['ATMID'];
-$ATMID_2 = $_POST['ATMID_2'];
-$ATMID_3 = $_POST['ATMID_3'];
-$ATMID_4 = $_POST['ATMID_4'];
 
 
 
@@ -114,6 +140,7 @@ $size = $_FILES['up']['size'];
 $type = $_FILES['up']['type'];
 $tmp_name = $_FILES['up']['tmp_name'];
 $location = "file_img/" . time() . $name;
+
 
 $gsmnum = $_POST['GSM'];
 
@@ -206,7 +233,7 @@ $fetch = mysqli_fetch_array($runabc);
 
 $sql = "update sites set Status='$Status',Phase='$Phase',Customer='$Customer',Bank='$Bank',ATMID='$ATMID',ATMID_2='$ATMID_2',ATMID_3='$ATMID_3',ATMID_4='$ATMID_4',
 TrackerNo='$TrackerNo',City='$City',State='$fetch[0]',Zone='$Zone',Panel_Make='$Panel_Make',OldPanelID='$OldPanelID',
-NewPanelID='$NewPanelID',DVRIP='$DVRIP',DVRName='$DVRName',UserName='$UserName',Password='$Password',live='$live',eng_name='$engname',editby='" . $_SESSION['name'] . "',site_remark='" . $remark . "',PanelIP='" . $PanelsIP . "',DVR_Model_num='" . $DVR_Model_num . "',Router_Model_num='" . $Router_Model_num . "',RouterIp='" . $RouterIp . "',old_atmid='" . $old_atmid . "' where SN='$sn'";
+NewPanelID='$NewPanelID',DVRIP='$DVRIP',DVRName='$DVRName',UserName='$UserName',Password='$Password',live='$live',eng_name='$engname',editby='" . $_SESSION['name'] . "',site_remark='" . $remark . "',PanelIP='" . $PanelsIP . "',DVR_Model_num='" . $DVR_Model_num . "',Router_Model_num='" . $Router_Model_num . "',RouterIp='" . $RouterIp . "',old_atmid='" . $old_atmid . "',panel_power_connection='" . $power_connection . "' where SN='$sn'";
 
     if($result = mysqli_query($conn, $sql)){
 
@@ -220,7 +247,7 @@ NewPanelID='$NewPanelID',DVRIP='$DVRIP',DVRName='$DVRName',UserName='$UserName',
         $runsql2 = mysqli_query($conn, $sql2);
     
         $sql3 = "insert into sites_log(Status,Phase,Customer,Bank,ATMID,ATMID_2,ATMID_3,ATMID_4,TrackerNo,ATMShortName,SiteAddress,City,State,Zone,Panel_Make,OldPanelID,NewPanelID,DVRIP,DVRName,UserName,Password,live,current_dt,mailreceive_dt,eng_name,addedby,site_remark,site_id,editby,old_atmid)
-        values('$Status','$Phase','$Customer','$Bank','$ATMID','$ATMID_2','$ATMID_3','$ATMID_4','$TrackerNo','$ATMShortName','$SiteAddress','$City','" . $fetch[0] . "','$Zone','$Panel_Make','$OldPanelID','$NewPanelID','$DVRIP','$DVRName','$UserName','$Password','$live','$curentdt','$insdates.$t','$engname','" . $addbysite . "','$remark','" . $sn . "','" . $_SESSION['name'] . "','$old_atmid')";
+        values('$Status','$Phase','$Customer','$Bank','$ATMID','$ATMID_2','$ATMID_3','$ATMID_4','$TrackerNo','$ATMShortName','$SiteAddress','$City','" . $fetch[0] . "','$Zone','$Panel_Make','$OldPanelID','$NewPanelID','$DVRIP','$DVRName','$UserName','$Password','$live','$curentdt','" . $insdates . ' ' . $t . "','$engname','" . $addbysite . "','$remark','" . $sn . "','" . $_SESSION['name'] . "','$old_atmid')";
         
         $result3 = mysqli_query($conn, $sql3);
         
@@ -253,10 +280,36 @@ NewPanelID='$NewPanelID',DVRIP='$DVRIP',DVRName='$DVRName',UserName='$UserName',
         echo $broadbanddetails = "insert into  broadbanddetails (site_id,NetworkType,ProviderName,ProviderEmail,ProviderMobile,InternetPlans,BroadbandAmount,BroadbandAddress,MonthPlans,StartInternetDate,atmid,FreeMonthPlans,ExpiryDate) values('" . $site_id . "','" . $NetworkType . "','" . $ProviderName . "','" . $ProviderEmail . "','" . $ProviderMobile . "','" . $InternetPlans . "','" . $BroadbandAmount . "','" . $BroadbandAddress . ",'" . $MonthPlans . "','" . $StartInternetDate . "','" . $ATMID . "','" . $FreeMonthPlans . "','" . $ExpiryDate . "') ";
         $resultBroad = mysqli_query($conn, $broadbanddetails);
     }
+
+
+// Check Site circle
+if($circle!='' && $zonal!='' && $site_type!=''){
+	$checkcirlce_sql = mysqli_query($conn, "SELECT * FROM site_circle WHERE sn = '" . $site_id . "'");
+	if (mysqli_num_rows($checkcirlce_sql) > 0) {
+		// Update
+		$site_circle_query = "UPDATE site_circle SET ATMID='" . $ATMID . "', Zonal='" . $zonal . "', Circle='" . $circle . "' WHERE sn = '" . $site_id . "'";
+	} else {
+		// Insert
+		$site_circle_query = "INSERT INTO site_circle (ATMID, site_type, Bank, Zonal, Circle, sn) 
+							  VALUES ('" . $ATMID . "', '" . $site_type . "', '" . $Bank . "', '" . $zonal . "', '" . $circle . "', '" . $site_id . "')";
+	}
+	mysqli_query($conn, $site_circle_query);
+}
+
+// Execute the query
+
+// echo $site_circle_query ; 
+
+/*
+if($site_circle_query){
+    mysqli_query($conn,$site_circle_query);
+}
+*/
+
     ?>
     <script>
         alert("Updated successfully");
-           window.open("viewsite.php", "_self");
+        window.open("viewsite.php", "_self");
     </script>
     
     <?php

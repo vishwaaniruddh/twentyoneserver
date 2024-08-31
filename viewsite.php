@@ -112,15 +112,16 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
 			}
 
 			function transfer_site(sn) {
-				alert(sn);
-				$('#loadingmessage').show(); // show the loading message.
+				
+				$('#loadingmessage').show(); 
 				$.ajax({
 
 					type: 'POST',
 					url: 'transfer_site_data.php',
 					data: 'sn=' + sn,
 					success: function(msg) {
-						debugger;
+					 debugger;
+console.log(msg)
 						$('#loadingmessage').hide(); // hide the loading message
 						var obj = JSON.parse(msg);
 						console.log(obj);
@@ -166,7 +167,7 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
 				</center>
 
 				<center>
-					<h5 style="margin-top:70px;"><a href="view_sites_d.php" target="_blank"> View / Export All Sites</a>
+					<h5 style="margin-top:70px;"><a href="./view_sites_secondry.php" target="_blank"> View / Export All Sites</a>
 						<span class="blink_me">New</span>
 					</h5>
 				</center>
@@ -203,7 +204,9 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
 								while ($Qprojfetch = mysqli_fetch_array($runQproj)) {
 									
 								?>
-										<option value="<?php echo $Qprojfetch['id']; ?>" <?php if($_REQUEST['project']==$Qprojfetch['id']){ echo 'selected'; }?>>
+										<option value="<?php echo $Qprojfetch['id']; ?>" 
+										
+										<?php if($_REQUEST['project']==$Qprojfetch['id']){ echo 'selected'; } else if($Qprojfetch['id']=='1') { echo 'selected'; } ?>>
 											<?php echo $Qprojfetch['Name']; ?>
 										</option>
 

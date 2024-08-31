@@ -12,8 +12,8 @@ if ($conn->connect_error) {
       die("Connection failed: " . $conn->connect_error);
 } else {
       //echo "Connected succesfully";
-
 }
+
 
 //$newcn = new mysqli("localhost", $user, $pass,$dbname);
 //$newcn = new mysqli("192.168.100.21", "esurv", "Esurv123*","esurv");

@@ -1,4 +1,17 @@
 <?php session_start();
+function is_image($path)
+{
+    $a = getimagesize($path);
+    $image_type = $a[2];
+
+    if(in_array($image_type , array(IMAGETYPE_GIF , IMAGETYPE_JPEG ,IMAGETYPE_PNG , IMAGETYPE_BMP)))
+    {
+        return true;
+    }
+    return false;
+}
+
+
 
 
 if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
@@ -69,7 +82,7 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
     $DVRIP1 = $_POST['DVRIP'];
     //$DVRName1=$_POST['DVRName'];
     //$ATMShortName1=$_POST['ATMShortName'];
-    $atmid = $_POST['atmid'];
+    $atmid = trim($_POST['atmid']);
     $lstatus = $_POST['lstatus'];
     $strPage = $_POST['Page'];
     $cssbm = $_POST['cssbm'];
@@ -255,6 +268,7 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
         <?php echo $Num_Rows ?>
       </div>
     </center>
+
     <table border=1 style="margin-top:30px">
       <tr>
         <th>Sr No</th>
@@ -379,7 +393,7 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
         $result1 = mysqli_query($conn, $sql1);
         $row1 = mysqli_fetch_array($result1);
 
-        $sql2 = "select files from site_attachment where site_id='" . $row[0] . "'";
+        $sql2 = "select files from site_attachment where site_id='" . $row[0] . "' order by id desc";
         $result2 = mysqli_query($conn, $sql2);
         $row2 = mysqli_fetch_array($result2);
 
@@ -662,8 +676,11 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
             <?php } ?>
           </td>
 
-          <td><a href="<?php echo $row2["files"] ?>" download>
-              <?php echo '<img src="' . $row2["files"] . '" height="120" width="120">'; ?>
+          <td><a href="<?php echo $row2["files"] ?>">
+              <?php
+              echo
+              $row2["files"] ? '<img src="' . $row2["files"] . '" height="120" width="120" download />' : 'No files';
+              ?>
             </a></td>
 
           <td>
@@ -806,7 +823,19 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
     $track = $_POST['track'];
     $cities = $_POST['cities'];
 
-
+    $from = $_POST['F_date'];
+    $to = $_POST['T_date'];
+    if ($from != "") {
+      //$newDate = date_format($date,"y/m/d H:i:s");
+      $fromdt = date("Y-m-d", strtotime($from));
+    } else {
+      $fromdt = "";
+    }
+    if ($to != "") {
+      $todt = date("Y-m-d", strtotime($to));
+    } else {
+      $todt = "";
+    }
 
     $sql = "select * from dvrsite  where 1=1  ";
 
@@ -834,6 +863,15 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
 
     if ($cssbm != "") {
       $sql .= " and ATMID in(select ATM_ID from esurvsites where CSSBM='$cssbm')";
+    }
+	
+	if ($fromdt != "" && $todt != "") {
+      $sql .= " and liveDate between '" . $fromdt . " 00:00:00' and '" . $todt . " 23:59:59' ";
+      //echo $abc;
+    } else if ($fromdt != "" && $todt == "") {
+      $sql .= " and liveDate='" . $fromdt . "'";
+    } else if ($todt != "" && $fromdt == "") {
+      $sql .= " and liveDate='" . $todt . "'";
     }
 
 
@@ -1061,8 +1099,37 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
           <td>
             <?php echo $row["Camera3"]; ?>
           </td>
-          <td><img src="<?php echo $row["Attachment1"]; ?>" style="height:60px;width:60px"></td>
-          <td><img src="<?php echo $row["Attachment2"]; ?>" style="height:60px;width:60px"></td>
+          <td>
+            <?php 
+            
+            if(is_image($row["Attachment1"])){
+              ?>
+              <img src="<?php echo $row["Attachment1"]; ?>" style="height:60px;width:60px">
+              <?php
+            }else{
+              echo 'No Image' ; 
+            }
+
+
+            
+            
+            ?>
+        
+        
+        </td>
+          <td>
+          <?php
+          
+          if(is_image($row["Attachment2"])){
+            ?>
+            <img src="<?php echo $row["Attachment2"]; ?>" style="height:60px;width:60px">
+            <?php
+          }else{
+            echo 'No Image' ; 
+          }
+
+          ?>  
+          </td>
           <td>
             <?php echo $row["liveDate"]; ?>
           </td>
@@ -1137,7 +1204,19 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
     $customer = $_POST['cust'];
     $track = $_POST['track'];
 
-
+    $from = $_POST['F_date'];
+    $to = $_POST['T_date'];
+    if ($from != "") {
+      //$newDate = date_format($date,"y/m/d H:i:s");
+      $fromdt = date("Y-m-d", strtotime($from));
+    } else {
+      $fromdt = "";
+    }
+    if ($to != "") {
+      $todt = date("Y-m-d", strtotime($to));
+    } else {
+      $todt = "";
+    }
 
 
     $sql = "select * from dvronline  where 1=1  ";
@@ -1164,6 +1243,16 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
     if ($cssbm != "") {
       $sql .= " and ATMID in(select ATM_ID from esurvsites where CSSBM='$cssbm')";
     }
+	
+	if ($fromdt != "" && $todt != "") {
+      $sql .= " and LiveDate between '" . $fromdt . " 00:00:00' and '" . $todt . " 23:59:59' ";
+      //echo $abc;
+    } else if ($fromdt != "" && $todt == "") {
+      $sql .= " and LiveDate='" . $fromdt . "'";
+    } else if ($todt != "" && $fromdt == "") {
+      $sql .= " and LiveDate='" . $todt . "'";
+    }
+
 
 
     echo $sql;
@@ -1417,7 +1506,7 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
               <?php echo "NA"; ?>
             </td>
             <td>
-              <?php echo $row["Live Date"]; ?>
+              <?php echo $row["LiveDate"]; ?>
             </td>
             <td>
               <?php echo "NA"; ?>
@@ -1495,8 +1584,8 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
     </body>
 
     </html>
-<?php
-  }  else if ($project == "4") {
+  <?php
+  } else if ($project == "4") {
 
 
     $DVRIP1 = $_POST['DVRIP'];
@@ -1507,6 +1596,19 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
     $customer = $_POST['cust'];
     $track = $_POST['track'];
 
+    $from = $_POST['F_date'];
+    $to = $_POST['T_date'];
+    if ($from != "") {
+      //$newDate = date_format($date,"y/m/d H:i:s");
+      $fromdt = date("Y-m-d", strtotime($from));
+    } else {
+      $fromdt = "";
+    }
+    if ($to != "") {
+      $todt = date("Y-m-d", strtotime($to));
+    } else {
+      $todt = "";
+    }
 
 
 
@@ -1533,6 +1635,16 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
 
     if ($cssbm != "") {
       $sql .= " and ATMID in(select ATM_ID from esurvsites where CSSBM='$cssbm')";
+    }
+
+    
+	if ($fromdt != "" && $todt != "") {
+      $sql .= " and LiveDate between '" . $fromdt . " 00:00:00' and '" . $todt . " 23:59:59' ";
+      //echo $abc;
+    } else if ($fromdt != "" && $todt == "") {
+      $sql .= " and LiveDate='" . $fromdt . "'";
+    } else if ($todt != "" && $fromdt == "") {
+      $sql .= " and LiveDate='" . $todt . "'";
     }
 
 
@@ -1582,16 +1694,6 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
 
     <?php
     $sr++;
-
-
-
-
-
-
-
-
-
-
     ?>
     </table>
 
@@ -1803,7 +1905,7 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
             </td>
 
 
-            <td> <a href="editOnlineDVR.php?atmid=<?php echo $row[0]; ?>" title="Edit" class="icon-1 info-tooltip">Edit</a>
+            <td> <a href="editOnlineGPS.php?atmid=<?php echo $row[0]; ?>" title="Edit" class="icon-1 info-tooltip">Edit</a>
             </td>
 
             <td>
@@ -1867,7 +1969,6 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
     </html>
 <?php
   }
-
 } else {
   header("location: index.php");
 }

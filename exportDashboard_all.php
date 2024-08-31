@@ -26,6 +26,7 @@ $headerRow = [
     'Live',
     'Live Date',
     'Remarks',
+    'Panel Make',
     'Address',
 ];
 
@@ -61,7 +62,9 @@ while ($queryResult = mysqli_fetch_assoc($query)) {
     $sheet->setCellValueByColumnAndRow($columnIndex++, $rowIndex, $queryResult['live']);
     $sheet->setCellValueByColumnAndRow($columnIndex++, $rowIndex, $queryResult['live_date']);
     $sheet->setCellValueByColumnAndRow($columnIndex++, $rowIndex, $queryResult['site_remark']);
+    $sheet->setCellValueByColumnAndRow($columnIndex++, $rowIndex, $queryResult['Panel_Make']);
     
+
     // Split the address into lines
     $addressWords = explode(' ', $queryResult['Address']);
     $addressLines = array_chunk($addressWords, 3);
