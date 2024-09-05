@@ -127,6 +127,20 @@ foreach($myArray as $my_Array){
   .nav-item{
     white-space: nowrap;
   }
+  .nav-item {
+  position: relative;
+}
+
+.nav-item .nav-link {
+  color: #fff; /* Text color */
+  text-decoration: none; /* Remove underline by default */
+}
+
+.nav-item:hover .nav-link {
+  text-decoration: underline; /* Underline text on hover */
+  color: #fff; /* Ensure text color stays white on hover */
+}
+
 </style>
 
   <header role="banner">

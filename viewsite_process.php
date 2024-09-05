@@ -1,14 +1,13 @@
 <?php session_start();
 function is_image($path)
 {
-    $a = getimagesize($path);
-    $image_type = $a[2];
+  $a = getimagesize($path);
+  $image_type = $a[2];
 
-    if(in_array($image_type , array(IMAGETYPE_GIF , IMAGETYPE_JPEG ,IMAGETYPE_PNG , IMAGETYPE_BMP)))
-    {
-        return true;
-    }
-    return false;
+  if (in_array($image_type, array(IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_BMP))) {
+    return true;
+  }
+  return false;
 }
 
 
@@ -381,7 +380,7 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
         <th>Camera IP </th>
         <th>Port</th>
         <th>Ip Camera</th>
-
+        <th>panel_power_connection</th>
       </tr>
       <?php
       $srno = 1;
@@ -767,6 +766,7 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
           </td>
 
 
+          <td><?php echo $row['panel_power_connection'];?></td>
 
 
 
@@ -864,8 +864,8 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
     if ($cssbm != "") {
       $sql .= " and ATMID in(select ATM_ID from esurvsites where CSSBM='$cssbm')";
     }
-	
-	if ($fromdt != "" && $todt != "") {
+
+    if ($fromdt != "" && $todt != "") {
       $sql .= " and liveDate between '" . $fromdt . " 00:00:00' and '" . $todt . " 23:59:59' ";
       //echo $abc;
     } else if ($fromdt != "" && $todt == "") {
@@ -1100,35 +1100,35 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
             <?php echo $row["Camera3"]; ?>
           </td>
           <td>
-            <?php 
-            
-            if(is_image($row["Attachment1"])){
-              ?>
+            <?php
+
+            if (is_image($row["Attachment1"])) {
+            ?>
               <img src="<?php echo $row["Attachment1"]; ?>" style="height:60px;width:60px">
-              <?php
-            }else{
-              echo 'No Image' ; 
+            <?php
+            } else {
+              echo 'No Image';
             }
 
 
-            
-            
-            ?>
-        
-        
-        </td>
-          <td>
-          <?php
-          
-          if(is_image($row["Attachment2"])){
-            ?>
-            <img src="<?php echo $row["Attachment2"]; ?>" style="height:60px;width:60px">
-            <?php
-          }else{
-            echo 'No Image' ; 
-          }
 
-          ?>  
+
+            ?>
+
+
+          </td>
+          <td>
+            <?php
+
+            if (is_image($row["Attachment2"])) {
+            ?>
+              <img src="<?php echo $row["Attachment2"]; ?>" style="height:60px;width:60px">
+            <?php
+            } else {
+              echo 'No Image';
+            }
+
+            ?>
           </td>
           <td>
             <?php echo $row["liveDate"]; ?>
@@ -1243,8 +1243,8 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
     if ($cssbm != "") {
       $sql .= " and ATMID in(select ATM_ID from esurvsites where CSSBM='$cssbm')";
     }
-	
-	if ($fromdt != "" && $todt != "") {
+
+    if ($fromdt != "" && $todt != "") {
       $sql .= " and LiveDate between '" . $fromdt . " 00:00:00' and '" . $todt . " 23:59:59' ";
       //echo $abc;
     } else if ($fromdt != "" && $todt == "") {
@@ -1637,8 +1637,8 @@ if (isset($_SESSION['login_user']) && isset($_SESSION['id'])) {
       $sql .= " and ATMID in(select ATM_ID from esurvsites where CSSBM='$cssbm')";
     }
 
-    
-	if ($fromdt != "" && $todt != "") {
+
+    if ($fromdt != "" && $todt != "") {
       $sql .= " and LiveDate between '" . $fromdt . " 00:00:00' and '" . $todt . " 23:59:59' ";
       //echo $abc;
     } else if ($fromdt != "" && $todt == "") {

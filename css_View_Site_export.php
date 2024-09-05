@@ -186,9 +186,8 @@ if ($qrydata == "RMS") {
       'Port',
       'Ip Camera',
       'Bank Officer Name',
-      'Bank Officer Number' 
-
-      
+      'Bank Officer Number',
+      'panel_power_connection'
     );
 
     header('Content-type: application/csv');
@@ -338,8 +337,9 @@ if ($qrydata == "RMS") {
     array_push($array_row,remove_special($cam_name));
     array_push($array_row,remove_special($row1['bank_officer_name']));
     array_push($array_row,remove_special($row1['bank_officer_number']));
+    array_push($array_row,remove_special($rowarr['panel_power_connection']));
     
-        
+    
     $i++;
     $serial_number++;
 
